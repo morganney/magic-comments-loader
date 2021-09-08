@@ -5,7 +5,8 @@ describe('commentFor', () => {
     expect(commentFor).toStrictEqual(
       expect.objectContaining({
         webpackChunkName: expect.any(Function),
-        webpackMode: expect.any(Function)
+        webpackMode: expect.any(Function),
+        webpackIgnore: expect.any(Function)
       })
     )
   })

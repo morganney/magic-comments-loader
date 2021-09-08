@@ -4,26 +4,7 @@ const getOverrideConfig = (overrides, filepath, config) => {
   const length = overrides.length
 
   for (let i = 0; i < length; i++) {
-    let { files } = overrides[i]
-    let globs = []
-    let notglobs = []
-
-    if (!Array.isArray(files)) {
-      files = [files]
-    }
-
-    files.forEach(file => {
-      if (/^!/.test(file)) {
-        notglobs.push(file)
-      } else {
-        globs.push(file)
-      }
-    })
-
-    if (
-      (globs.length === 0 || globs.some(glob => micromatch.isMatch(filepath, glob))) &&
-      notglobs.every(notglob => micromatch.isMatch(filepath, notglob))
-    ) {
+    if (filepathIsMatch(filepath, overrides[i].files)) {
       return { ...config, ...overrides[i].config }
     }
   }
@@ -31,4 +12,26 @@ const getOverrideConfig = (overrides, filepath, config) => {
   return config
 }
 
-export { getOverrideConfig }
+const filepathIsMatch = (filepath, files) => {
+  const globs = []
+  const notglobs = []
+
+  if (!Array.isArray(files)) {
+    files = [files]
+  }
+
+  files.forEach(file => {
+    if (/^!/.test(file)) {
+      notglobs.push(file)
+    } else {
+      globs.push(file)
+    }
+  })
+
+  return (
+    (globs.length === 0 || globs.some(glob => micromatch.isMatch(filepath, glob))) &&
+    notglobs.every(notglob => micromatch.isMatch(filepath, notglob))
+  )
+}
+
+export { getOverrideConfig, filepathIsMatch }
