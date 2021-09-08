@@ -1,0 +1,53 @@
+{
+  "name": "magic-comments-loader",
+  "version": "1.0.0",
+  "description": "Add webpack magic comments to your dynamic imports during build time",
+  "main": "dist",
+  "type": "module",
+  "engines": {
+    "node": ">=10.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/morganney/magic-comments-loader.git"
+  },
+  "bugs": {
+    "url": "https://github.com/morganney/magic-comments-loader/issues"
+  },
+  "scripts": {
+    "prepack": "node --experimental-json-modules ./prepack.js",
+    "lint": "eslint . src __tests__ --ext .js,.cjs",
+    "test": "node --experimental-vm-modules ./node_modules/.bin/jest"
+  },
+  "keywords": [
+    "webpack",
+    "magic",
+    "comments",
+    "loader",
+    "dynamic",
+    "import"
+  ],
+  "author": "Morgan Ney <morganney@gmail.com>",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@babel/cli": "^7.14.8",
+    "@babel/core": "^7.15.0",
+    "@babel/eslint-parser": "^7.15.4",
+    "@babel/preset-env": "^7.15.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-jest": "^24.4.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "jest": "^27.1.0",
+    "memfs": "^3.2.4",
+    "prettier": "^2.3.2",
+    "webpack": "^5.52.0"
+  },
+  "dependencies": {
+    "loader-utils": "^2.0.0",
+    "micromatch": "^4.0.4"
+  }
+}

@@ -1,0 +1,6 @@
+dist
+coverage
+node_modules
+__tests__/__fixtures__/file.js
+!.prettierrc.cjs
+!.eslintrc.cjs

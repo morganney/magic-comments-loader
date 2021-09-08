@@ -1,0 +1,42 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16.5.0'
+      - name: Cache
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Install Dependencies
+        run: npm ci
+      - name: Save error log
+        uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          name: npm-debug-log-${{ hashFiles('package-lock.json') }}
+          path: npm-debug.log
+      - name: Test
+        run: npm test
+      - name: Lint
+        run: npm run lint
+      - name: Pack
+        run: npm pack
