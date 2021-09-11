@@ -191,7 +191,7 @@ const dynamicModule = await import(/* webpackChunkName: "path-to-some-module", w
 
 ### Options
 
-These are the options that can be configured under the loader `options`. All comments accept an [`overrides`](./#overrides) key in addition to `config` when defined as an object.
+These are the options that can be configured under the loader `options`. All comments accept an [`overrides`](#overrides) key in addition to `config` when defined as an object.
 
 * `verbose`: Prints console statements of the updated `import()`s per module filepath during the webpack build. Useful for debugging your custom configurations.
 * `webpackChunkName`
