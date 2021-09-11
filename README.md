@@ -8,7 +8,8 @@ Magic comments supported:
 * `webpackChunkName`
 * `webpackMode`
 * `webpackIgnore`
-
+* `webpackPreload`
+* `webpackPrefetch`
 
 ## Usage
 
@@ -48,7 +49,7 @@ module: {
         options: {
           webpackChunkName: true,
           webpackMode: 'lazy',
-          webpackIgnore: 'src/ignore/**/*.js'
+          webpackPreload: 'src/preload/**/*.js'
         }
       }
     }
@@ -85,23 +86,24 @@ module: {
 }
 ```
 
-You can also override the configuration passed in the `config` key by using the `overrides` key, which is an array of objects that look like:
+#### Overrides
+
+You can also override the configuration passed in the `config` key by using `overrides`, which is an array of objects that look like:
 
 ```js
 overrides: [
  {
-   // Array of globs or a specific file (can be a string too)
-   // Uses micromatch to compare the module filepath to the provided string
-   files: ['src/**/*.js', '!/src/skip/**/*.js']
-   // Other configuration keys for the comment type can go here too
+   // Can be an array of strings too
+   files: 'src/**/*.js',
    config: {
-     active: false
+     active: false,
+     // Possibly other configuration values
    }
  }
 ]
 ```
 
-Here's a more complete example using comment `config` and `overrides`:
+Here's a more complete example using `config` and `overrides` to customize how comments are applied:
 
 ```js
 module: {
@@ -189,21 +191,32 @@ const dynamicModule = await import(/* webpackChunkName: "path-to-some-module", w
 
 ### Options
 
-These are the options that can be configured under the loader `options`.
+These are the options that can be configured under the loader `options`. All comments accept an [`overrides`](./#overrides) key in addition to `config` when defined as an object.
 
 * `verbose`: Prints console statements of the updated `import()`s per module filepath during the webpack build. Useful for debugging your custom configurations.
 * `webpackChunkName`
   * `true`: Adds `webpackChunkName` comments to **all** dynamic imports using the full path to the imported module to construct the name, so `import('path/to/module')` becomes `import(/* webpackChunkName: "path-to-module" */ 'path/to/module')`. This is the default.
   * `false`: Disables adding the `webpackChunkName` comment globally.
+  * `some/glob/**/*.js`|`['/some/globs/**/*.js']`: Adds the comment with the default behavior of slugifying (hyphenating) the import path.
   * `config.active`: Boolean to enable/disable the comment.
   * `config.basename`: Boolean to use only the basename from the import path as the chunk name. Some relative path imports may end up with the same basename depsite importing different modules. Use in areas where you know the basenames are unique.
 * `webpackMode`
-  * `true`: Adds `webpackMode` comments to **all** dynamic imports using `lazy` so `import('path/to/module')` becomes `import(/* webpackMode: "lazy" */ 'path/to/module')`.
+  * `true`: Adds `webpackMode` comments to **all** dynamic imports using `lazy`, so `import('path/to/module')` becomes `import(/* webpackMode: "lazy" */ 'path/to/module')`.
   * `false`: Disables adding the `webpackChunkName` comment globally. This is the default.
   * `config.active`: Boolean to enable/disable the comment.
   * `config.mode`: String to set the mode. `lazy`, `lazy-once`, `eager`, or `weak`.
 * `webpackIgnore`
-  * `true`: Adds `webpackIgnore` comments to **all** dynamic imports `true` so `import('path/to/module')` becomes `import(/* webpackIgnore: true */ 'path/to/module')`.
+  * `true`: Adds `webpackIgnore` comments to **all** dynamic imports, so `import('path/to/module')` becomes `import(/* webpackIgnore: true */ 'path/to/module')`.
   * `false`: Disables adding the `webpackIgnore` comment globally. This is the default.
+  * `some/glob/**/*.js`|`['/some/globs/**/*.js']`: Adds the comment with a value of `true` to all module filepaths that match the string or array of strings.
+  * `config.active`: Boolean to enable/disable the comment.
+* `webpackPreload`
+  * `true`: Adds `webpackPreload` comments to **all** dynamic imports, so `import('path/to/module')` becomes `import(/* webpackPreload: true */ 'path/to/module')`.
+  * `false`: Disables adding the `webpackPreload` comment globally. This is the default.
+  * `some/glob/**/*.js`|`['/some/globs/**/*.js']`: Adds the comment with a value of `true` to all module filepaths that match the string or array of strings.
+  * `config.active`: Boolean to enable/disable the comment.
+* `webpackPrefetch`
+  * `true`: Adds `webpackPrefetch` comments to **all** dynamic imports, so `import('path/to/module')` becomes `import(/* webpackPrefetch: true */ 'path/to/module')`.
+  * `false`: Disables adding the `webpackPrefetch` comment globally. This is the default.
   * `some/glob/**/*.js`|`['/some/globs/**/*.js']`: Adds the comment with a value of `true` to all module filepaths that match the string or array of strings.
   * `config.active`: Boolean to enable/disable the comment.

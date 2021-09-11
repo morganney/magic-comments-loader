@@ -6,7 +6,9 @@ describe('commentFor', () => {
       expect.objectContaining({
         webpackChunkName: expect.any(Function),
         webpackMode: expect.any(Function),
-        webpackIgnore: expect.any(Function)
+        webpackIgnore: expect.any(Function),
+        webpackPreload: expect.any(Function),
+        webpackPrefetch: expect.any(Function)
       })
     )
   })

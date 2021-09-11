@@ -1,4 +1,4 @@
-import { webpackMode } from '../src/webpackMode'
+import { webpackMode } from '../src/webpackMode.js'
 
 describe('webpackMode', () => {
   it('returns a "webpackMode" magic comment', () => {
