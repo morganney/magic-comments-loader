@@ -34,4 +34,28 @@ const filepathIsMatch = (filepath, files) => {
   )
 }
 
-export { getOverrideConfig, filepathIsMatch }
+const getOverrideSchema = commentSchema => ({
+  type: 'array',
+  items: {
+    type: 'object',
+    properties: {
+      config: commentSchema,
+      files: {
+        oneOf: [
+          {
+            type: 'string'
+          },
+          {
+            type: 'array',
+            items: {
+              type: 'string'
+            }
+          }
+        ]
+      }
+    },
+    additionalProperties: false
+  }
+})
+
+export { getOverrideConfig, getOverrideSchema, filepathIsMatch }

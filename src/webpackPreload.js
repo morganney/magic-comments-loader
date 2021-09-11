@@ -1,14 +1,14 @@
 import { getSchema, getConfig } from './booleanComment.js'
 
 const schema = getSchema()
-const webpackIgnore = (filepath, importPath, value) => {
+const webpackPreload = (filepath, importPath, value) => {
   const config = getConfig(value, filepath)
 
   if (!config.active) {
     return ''
   }
 
-  return 'webpackIgnore: true'
+  return 'webpackPreload: true'
 }
 
-export { webpackIgnore, schema }
+export { webpackPreload, schema }

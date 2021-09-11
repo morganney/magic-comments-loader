@@ -1,4 +1,4 @@
-import { webpackIgnore } from '../src/webpackIgnore'
+import { webpackIgnore } from '../src/webpackIgnore.js'
 
 describe('webpackIgnore', () => {
   it('returns a "webpackIgnore" magic comment', () => {

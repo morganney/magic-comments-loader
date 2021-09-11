@@ -1,26 +1,24 @@
 import { parse } from 'path'
 
-import { getOverrideConfig } from './util'
+import { getSchema, getConfig } from './booleanComment.js'
 
-const defaultConfig = {
-  active: true,
-  basename: false
-}
-const getConfig = (value, filepath) => {
-  if (value === true) {
-    return defaultConfig
-  }
-
-  let config = { ...defaultConfig, ...value.config }
-
-  if (Array.isArray(value.overrides)) {
-    config = getOverrideConfig(value.overrides, filepath, config)
-  }
-
-  return config
-}
+const schema = getSchema({
+  type: 'object',
+  properties: {
+    active: {
+      type: 'boolean'
+    },
+    basename: {
+      type: 'boolean'
+    }
+  },
+  additionalProperties: false
+})
 const webpackChunkName = (filepath, importPath, value) => {
-  const config = getConfig(value, filepath)
+  const config = getConfig(value, filepath, {
+    active: true,
+    basename: false
+  })
 
   if (!config.active) {
     return ''
@@ -49,4 +47,4 @@ const webpackChunkName = (filepath, importPath, value) => {
   return `webpackChunkName: "${chunkName}"`
 }
 
-export { webpackChunkName }
+export { webpackChunkName, schema }
