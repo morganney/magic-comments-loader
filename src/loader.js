@@ -3,9 +3,8 @@ import { validate } from 'schema-utils'
 
 import { schema } from './schema.js'
 import { getCommenter } from './comment.js'
+import { dynamicImportsWithoutComments } from './util.js'
 
-const dynamicImportsWithoutComments =
-  /(?<![\w.]|#!|\*[\s\w]*?|\/\/\s*)import\s*\((?!\s*\/\*)(?<path>\s*?['"`][^)]+['"`]\s*)\)(?![\s]*?\*\/)/g
 const loader = function (source, map, meta) {
   const options = getOptions(this)
   const optionKeys = Object.keys(options)

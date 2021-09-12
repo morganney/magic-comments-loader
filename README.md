@@ -34,7 +34,7 @@ If you must have a multiline comment then this style is ok (only one `import()` 
  */
 ```
 
-This module uses a [RegExp](https://github.com/morganney/magic-comments-loader/blob/master/src/loader.js#L8) not a parser. If you would like to add better support for ignoring `import()` behind multiline comments please open a pull request. See some more [examples on regexr](https://regexr.com/65fg0).
+This module uses a RegExp not a parser. If you would like to add better support for ignoring `import()` behind multiline comments please open a pull request. See some more [examples on regexr](https://regexr.com/65fg0).
 
 ### Configuration
 
