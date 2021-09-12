@@ -8,6 +8,7 @@ describe('webpackPrefetch', () => {
     expect(webpackPrefetch(testPath, testImportPath, true)).toEqual(
       'webpackPrefetch: true'
     )
+    expect(webpackPrefetch(testPath, testImportPath, false)).toEqual('')
     expect(webpackPrefetch(testPath, testImportPath, 'some/**/*.js')).toEqual(
       'webpackPrefetch: true'
     )

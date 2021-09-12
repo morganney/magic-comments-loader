@@ -12,6 +12,7 @@ describe('webpackExports', () => {
     expect(comment).toEqual('webpackExports: ["mock"]')
     expect(exports).toHaveBeenCalledWith('some/test/module.js', './some/import/path')
     expect(webpackExports(testPath, testImportPath, true)).toEqual('')
+    expect(webpackExports(testPath, testImportPath, false)).toEqual('')
     expect(
       webpackExports(testPath, testImportPath, {
         config: { active: () => true, exports: () => ['one', 'two'] }

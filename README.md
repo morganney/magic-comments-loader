@@ -1,6 +1,6 @@
 # [`magic-comments-loader`](https://www.npmjs.com/package/magic-comments-loader)
 
-Adds [magic coments](https://webpack.js.org/api/module-methods/#magic-comments) to your dynamic `import()` statements.
+Keep your source code clean, add [magic coments](https://webpack.js.org/api/module-methods/#magic-comments) to your dynamic `import()` statements at build time.
 
 NOTE: **This loader ignores dynamic imports that already include comments of any kind**.
 
@@ -15,6 +15,26 @@ Magic comments supported:
 ## Usage
 
 First `npm install magic-comments-loader`.
+
+Try *not* to have dynamic `import()` statements behind [comments](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#comments). **It is better to remove unused code in production**.
+If you must, e.g. your comment is referencing usage of dynamic imports, then these styles are ok:
+
+```js
+// import('some-ignored-module')
+/* Some comment about a dynamic import('module') */
+```
+
+If you must have a multiline comment then this style is ok (only one `import()` per comment line preceded by an asterisk):
+
+```js
+/**
+ * Comment about import('module/one')
+ * Comment about import('module/two')
+ * import('module/three'), etc.
+ */
+```
+
+This module uses a [RegExp](https://github.com/morganney/magic-comments-loader/blob/master/src/loader.js#L8) not a parser. If you would like to add better support for ignoring `import()` behind multiline comments please open a pull request. See some more [examples on regexr](https://regexr.com/65fg0).
 
 ### Configuration
 
@@ -52,8 +72,11 @@ module: {
           webpackChunkName: true,
           webpackMode: 'lazy',
           webpackIgnore: 'src/ignore/**/*.js',
-          webpackPreload: ['src/preload/**/*.js', '!src/preload/skip/**/*.js'],
           webpackPrefetch: 'src/prefetch/**/*.js'
+          webpackPreload: [
+            'src/preload/**/*.js',
+            '!src/preload/skip/**/*.js'
+          ]
         }
       }
     }
@@ -107,12 +130,14 @@ You can also override the configuration passed in the `config` key by using `ove
 ```js
 overrides: [
  {
-   // Can be an array of globs too
-   files: 'src/**/*.js',
+   files: ['src/**/*.js'],
    config: {
      active: true,
-     exports: ['foo', 'bar']
-     // Etc.
+     mode: (modulePath, importPath) => {
+       if (/eager/.test(importPath)) {
+         return 'eager'
+       }
+     }
    }
  }
 ]
@@ -149,7 +174,10 @@ module: {
               }
             ]
           },
-          webpackPrefetch: ['src/prefetch/**/*.js', '!src/prefetch/skip/**/*.js'],
+          webpackPrefetch: [
+            'src/prefetch/**/*.js',
+            '!src/prefetch/skip/**/*.js'
+          ],
           webpackMode: {
             config: {
               mode: 'lazy'
@@ -243,7 +271,7 @@ These are the options that can be configured under the loader `options`. When us
   * `String(lazy|lazy-once|eager|weak)`: Adds the comment to **all** dynamic imports using the provided value.
   * `Function`: `(modulePath, importPath) => String(lazy|lazy-once|eager|weak)`. Return falsy value to skip.
   * `config.active`: Boolean | `(modulePath, importPath) => Boolean`. Returning `false` does not add the comment.
-  * `config.mode`: `(modulePath, importPath) => String(lazy|lazy-once|eager|weak)`. Return falsy value to skip.
+  * `config.mode`: `String(lazy|lazy-once|eager|weak)` | `(modulePath, importPath) => String(lazy|lazy-once|eager|weak)`. Return falsy value to skip.
 * `webpackExports`
   * `Function`: `(modulePath, importPath) => [String(<module names|default>)]`. Return falsy value to skip.
   * `config.active`: Boolean | `(modulePath, importPath) => Boolean`. Returning `false` does not add the comment.

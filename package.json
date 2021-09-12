@@ -1,6 +1,6 @@
 {
   "name": "magic-comments-loader",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Add webpack magic comments to your dynamic imports during build time",
   "main": "dist",
   "type": "module",
@@ -17,6 +17,7 @@
   "scripts": {
     "prepack": "node --experimental-json-modules ./prepack.js",
     "lint": "eslint . src __tests__ --ext .js,.cjs",
+    "lint:fix": "npm run lint -- --fix",
     "test": "node --experimental-vm-modules ./node_modules/.bin/jest"
   },
   "keywords": [
