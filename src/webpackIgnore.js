@@ -1,10 +1,14 @@
 import { getSchema, getConfig } from './booleanComment.js'
 
 const schema = getSchema()
-const webpackIgnore = (filepath, importPath, value) => {
-  const config = getConfig(value, filepath)
+const webpackIgnore = (filepath, importPath, value, match) => {
+  const config = getConfig(value, match, filepath, importPath)
+  const isActive =
+    typeof config.active === 'function'
+      ? config.active(filepath, importPath)
+      : config.active
 
-  if (!config.active) {
+  if (!isActive) {
     return ''
   }
 

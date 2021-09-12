@@ -15,6 +15,13 @@ describe('webpackPrefetch', () => {
       webpackPrefetch(testPath, testImportPath, { config: { active: false } })
     ).toEqual('')
     expect(
+      webpackPrefetch(testPath, testImportPath, { config: { active: () => true } })
+    ).toEqual('webpackPrefetch: true')
+    expect(webpackPrefetch(testPath, testImportPath, () => true)).toEqual(
+      'webpackPrefetch: true'
+    )
+    expect(webpackPrefetch(testPath, testImportPath, () => false)).toEqual('')
+    expect(
       webpackPrefetch(testPath, testImportPath, {
         config: { active: false },
         overrides: [

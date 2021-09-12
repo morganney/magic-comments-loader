@@ -13,6 +13,13 @@ describe('webpackPreload', () => {
       webpackPreload(testPath, testImportPath, { config: { active: false } })
     ).toEqual('')
     expect(
+      webpackPreload(testPath, testImportPath, { config: { active: () => true } })
+    ).toEqual('webpackPreload: true')
+    expect(webpackPreload(testPath, testImportPath, () => true)).toEqual(
+      'webpackPreload: true'
+    )
+    expect(webpackPreload(testPath, testImportPath, () => false)).toEqual('')
+    expect(
       webpackPreload(testPath, testImportPath, {
         config: { active: false },
         overrides: [

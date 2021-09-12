@@ -1,18 +1,6 @@
 import micromatch from 'micromatch'
 
-const getOverrideConfig = (overrides, filepath, config) => {
-  const length = overrides.length
-
-  for (let i = 0; i < length; i++) {
-    if (filepathIsMatch(filepath, overrides[i].files)) {
-      return { ...config, ...overrides[i].config }
-    }
-  }
-
-  return config
-}
-
-const filepathIsMatch = (filepath, files) => {
+const pathIsMatch = (path, files) => {
   const globs = []
   const notglobs = []
 
@@ -29,11 +17,10 @@ const filepathIsMatch = (filepath, files) => {
   })
 
   return (
-    (globs.length === 0 || globs.some(glob => micromatch.isMatch(filepath, glob))) &&
-    notglobs.every(notglob => micromatch.isMatch(filepath, notglob))
+    (globs.length === 0 || globs.some(glob => micromatch.isMatch(path, glob))) &&
+    notglobs.every(notglob => micromatch.isMatch(path, notglob))
   )
 }
-
 const getOverrideSchema = commentSchema => ({
   type: 'array',
   items: {
@@ -57,5 +44,17 @@ const getOverrideSchema = commentSchema => ({
     additionalProperties: false
   }
 })
+const getOverrideConfig = (overrides, filepath, config) => {
+  const length = overrides.length
 
-export { getOverrideConfig, getOverrideSchema, filepathIsMatch }
+  for (let i = 0; i < length; i++) {
+    if (pathIsMatch(filepath, overrides[i].files)) {
+      return { ...config, ...overrides[i].config }
+    }
+  }
+
+  return config
+}
+const importPrefix = /^(?:(\.{1,2}\/)+)|^\/|^.+:\/\/\/?[.-\w]+\//
+
+export { getOverrideConfig, getOverrideSchema, pathIsMatch, importPrefix }
