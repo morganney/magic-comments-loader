@@ -1,22 +1,20 @@
 import { getOverrideConfig, getOverrideSchema } from './util'
 
-const validModes = ['lazy', 'lazy-once', 'eager', 'weak']
 const configSchema = {
   type: 'object',
   properties: {
     active: {
       oneOf: [{ type: 'boolean' }, { instanceof: 'Function' }]
     },
-    mode: {
+    exports: {
       instanceof: 'Function'
     }
   },
+  required: ['exports'],
   additionalProperties: false
 }
 const schema = {
   oneOf: [
-    { type: 'boolean' },
-    { type: 'string' },
     { instanceof: 'Function' },
     {
       type: 'object',
@@ -30,26 +28,13 @@ const schema = {
   ]
 }
 const defaultConfig = {
-  active: true,
-  mode: () => 'lazy'
+  active: true
 }
 const getConfig = (value, filepath) => {
-  if (value === true) {
-    return defaultConfig
-  }
-
-  if (typeof value === 'string') {
-    return {
-      ...defaultConfig,
-      mode: () => value,
-      active: validModes.includes(value)
-    }
-  }
-
   if (typeof value === 'function') {
     return {
       ...defaultConfig,
-      mode: value
+      exports: value
     }
   }
 
@@ -61,24 +46,28 @@ const getConfig = (value, filepath) => {
 
   return config
 }
-const webpackMode = (filepath, importPath, value) => {
+const webpackExports = (filepath, importPath, value) => {
+  let exports = ''
+  let configExports = []
   const config = getConfig(value, filepath)
   const isActive =
     typeof config.active === 'function'
       ? config.active(filepath, importPath)
       : config.active
 
-  if (!isActive || typeof config.mode !== 'function') {
+  if (!isActive || typeof config.exports !== 'function') {
     return ''
   }
 
-  const configMode = config.mode(filepath, importPath)
+  configExports = config.exports(filepath, importPath)
 
-  if (!validModes.includes(configMode)) {
+  if (!Array.isArray(configExports)) {
     return ''
   }
 
-  return `webpackMode: "${configMode}"`
+  exports = `["${configExports.reduce((curr, next) => `${curr}", "${next}`)}"]`
+
+  return `webpackExports: ${exports}`
 }
 
-export { webpackMode, schema }
+export { webpackExports, schema }

@@ -13,6 +13,9 @@ describe('webpackIgnore', () => {
       webpackIgnore(testPath, testImportPath, { config: { active: false } })
     ).toEqual('')
     expect(
+      webpackIgnore(testPath, testImportPath, { config: { active: () => true } })
+    ).toEqual('webpackIgnore: true')
+    expect(
       webpackIgnore(testPath, testImportPath, {
         config: { active: false },
         overrides: [

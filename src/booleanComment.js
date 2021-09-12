@@ -1,16 +1,16 @@
-import { getOverrideSchema, filepathIsMatch } from './util'
+import { getOverrideSchema, pathIsMatch, importPrefix } from './util'
 
 const defaultSchema = {
   type: 'object',
   properties: {
     active: {
-      type: 'boolean'
+      oneOf: [{ type: 'boolean' }, { instanceof: 'Function' }]
     }
   },
   additionalProperties: false
 }
 const getSchema = (commentSchema = defaultSchema) => ({
-  anyOf: [
+  oneOf: [
     { type: 'boolean' },
     { type: 'string' },
     {
@@ -19,6 +19,7 @@ const getSchema = (commentSchema = defaultSchema) => ({
         type: 'string'
       }
     },
+    { instanceof: 'Function' },
     {
       type: 'object',
       properties: {
@@ -30,7 +31,15 @@ const getSchema = (commentSchema = defaultSchema) => ({
     }
   ]
 })
-const getConfig = (value, filepath, defaultConfig = { active: true }) => {
+const getConfig = (
+  value,
+  match,
+  filepath,
+  importPath,
+  defaultConfig = { active: true }
+) => {
+  const path = match === 'import' ? importPath.replace(importPrefix, '') : filepath
+
   if (value === true) {
     return defaultConfig
   }
@@ -38,7 +47,24 @@ const getConfig = (value, filepath, defaultConfig = { active: true }) => {
   if (Array.isArray(value) || typeof value === 'string') {
     return {
       ...defaultConfig,
-      active: filepathIsMatch(filepath, value)
+      active: pathIsMatch(path, value)
+    }
+  }
+
+  if (typeof value === 'function') {
+    const configValue = value(filepath, importPath)
+
+    if (configValue) {
+      return {
+        ...defaultConfig,
+        active: true,
+        dynamic: configValue
+      }
+    }
+
+    return {
+      ...defaultConfig,
+      active: false
     }
   }
 
@@ -49,7 +75,7 @@ const getConfig = (value, filepath, defaultConfig = { active: true }) => {
     const length = overrides.length
 
     for (let i = 0; i < length; i++) {
-      if (filepathIsMatch(filepath, overrides[i].files)) {
+      if (pathIsMatch(path, overrides[i].files)) {
         return { ...config, ...overrides[i].config }
       }
     }

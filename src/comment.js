@@ -1,22 +1,25 @@
 import { commentFor } from './strategy.js'
 
-const getCommenter = (filepath, options) => (match, capturedImportPath) => {
+const getCommenter = (filepath, options) => (rgxMatch, capturedImportPath) => {
   const importPath = capturedImportPath.trim()
-  const { verbose, ...magicCommentOptions } = options
+  const bareImportPath = importPath.replace(/['"`]/g, '')
+  const { verbose, match, ...magicCommentOptions } = options
   const magicComment = Object.keys(magicCommentOptions)
     .map(key => {
       const option = magicCommentOptions[key]
 
       if (option) {
-        return commentFor[key](filepath, importPath, option)
+        return commentFor[key](filepath, bareImportPath, option, match)
       }
 
       return null
     })
     .filter(comment => comment)
-  const magicImport = match.replace(
+  const magicImport = rgxMatch.replace(
     capturedImportPath,
-    `/* ${magicComment.join(', ')} */ ${importPath}`
+    magicComment.length > 0
+      ? `/* ${magicComment.join(', ')} */ ${importPath}`
+      : `${importPath}`
   )
 
   if (verbose) {

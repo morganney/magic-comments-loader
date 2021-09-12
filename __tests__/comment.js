@@ -13,10 +13,11 @@ describe('getCommenter', () => {
         webpackChunkName: true,
         webpackMode: 'eager',
         webpackPrefetch: 'some/**/*.js',
-        webpackPreload: false
+        webpackPreload: false,
+        webpackExports: () => ['a', 'b']
       })('import("./some/test/module")', '"./some/test/module"')
     ).toBe(
-      'import(/* webpackChunkName: "some-test-module", webpackMode: "eager", webpackPrefetch: true */ "./some/test/module")'
+      'import(/* webpackChunkName: "some-test-module", webpackMode: "eager", webpackPrefetch: true, webpackExports: ["a", "b"] */ "./some/test/module")'
     )
 
     expect(
@@ -40,5 +41,17 @@ describe('getCommenter', () => {
         webpackChunkName: 'some/**/*.js'
       })('import("./some/test/module")', '"./some/test/module"')
     ).toBe('import(/* webpackChunkName: "some-test-module" */ "./some/test/module")')
+
+    expect(
+      getCommenter('some/file/path.js', {
+        webpackExports: () => ['foo', 'bar']
+      })('import("./some/test/module")', '"./some/test/module"')
+    ).toBe('import(/* webpackExports: ["foo", "bar"] */ "./some/test/module")')
+
+    expect(
+      getCommenter('some/file/path.js', {
+        webpackChunkName: false
+      })('import("./some/test/module")', '"./some/test/module"')
+    ).toBe('import("./some/test/module")')
   })
 })

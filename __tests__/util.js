@@ -1,14 +1,14 @@
-import { filepathIsMatch, getOverrideConfig } from '../src/util.js'
+import { pathIsMatch, getOverrideConfig } from '../src/util.js'
 
-describe('filepathIsMatch', () => {
+describe('pathIsMatch', () => {
   it('compares a filepath to glob patterns', () => {
-    expect(filepathIsMatch('some/file/path.js', 'some/**/*.js')).toEqual(true)
-    expect(
-      filepathIsMatch('some/file/path', ['some/**/*.js', '!some/file/*.js'])
-    ).toEqual(false)
-    expect(
-      filepathIsMatch('some/file/path.js', ['some/**/*.js', '!some/miss/*.js'])
-    ).toEqual(true)
+    expect(pathIsMatch('some/file/path.js', 'some/**/*.js')).toEqual(true)
+    expect(pathIsMatch('some/file/path', ['some/**/*.js', '!some/file/*.js'])).toEqual(
+      false
+    )
+    expect(pathIsMatch('some/file/path.js', ['some/**/*.js', '!some/miss/*.js'])).toEqual(
+      true
+    )
   })
 })
 

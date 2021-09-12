@@ -8,7 +8,8 @@ describe('commentFor', () => {
         webpackMode: expect.any(Function),
         webpackIgnore: expect.any(Function),
         webpackPreload: expect.any(Function),
-        webpackPrefetch: expect.any(Function)
+        webpackPrefetch: expect.any(Function),
+        webpackExports: expect.any(Function)
       })
     )
   })

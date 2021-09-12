@@ -17,7 +17,7 @@ const loader = function (source, map, meta) {
   const filepath = this.utils.contextify(this.rootContext, this.resourcePath)
   const magicComments = getCommenter(
     filepath.replace(/^\.\/?/, ''),
-    optionKeys.length > 0 ? options : { webpackChunkName: true }
+    optionKeys.length > 0 ? options : { match: 'module', webpackChunkName: true }
   )
 
   this.callback(

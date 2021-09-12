@@ -6,7 +6,7 @@ const schema = getSchema({
   type: 'object',
   properties: {
     active: {
-      type: 'boolean'
+      oneOf: [{ type: 'boolean' }, { instanceof: 'Function' }]
     },
     basename: {
       type: 'boolean'
@@ -14,18 +14,26 @@ const schema = getSchema({
   },
   additionalProperties: false
 })
-const webpackChunkName = (filepath, importPath, value) => {
-  const config = getConfig(value, filepath, {
+const webpackChunkName = (filepath, importPath, value, match) => {
+  const config = getConfig(value, match, filepath, importPath, {
     active: true,
     basename: false
   })
+  const isActive =
+    typeof config.active === 'function'
+      ? config.active(filepath, importPath)
+      : config.active
 
-  if (!config.active) {
+  if (!isActive) {
     return ''
   }
 
+  if (typeof config.dynamic === 'string') {
+    return `webpackChunkName: "${config.dynamic}"`
+  }
+
   const { basename } = config
-  const { dir, name } = parse(importPath.replace(/['"`]/g, ''))
+  const { dir, name } = parse(importPath)
   const segments = `${dir}/${name}`.split('/').filter(segment => /\w/.test(segment))
   const chunkName = basename
     ? name
