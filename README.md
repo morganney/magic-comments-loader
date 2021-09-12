@@ -118,8 +118,6 @@ overrides: [
 ]
 ```
 
-**The `config.match` in an override is ignored. You can only have one, top-level `config.match`**.
-
 Here's a more complete example using `config` and `overrides` to customize how comments are applied:
 
 ```js
@@ -210,7 +208,7 @@ const dynamicModule = await import(/* webpackChunkName: "path-to-module", webpac
 
 ## Options
 
-These are the options that can be configured under the loader `options`. When using comments with a [`config`](#with-config-options) key, you may also specify [`overrides`](#overrides)(`config.match` is ignored inside overrides).
+These are the options that can be configured under the loader `options`. When using comments with a [`config`](#with-config-options) key, you may also specify [`overrides`](#overrides).
 
 * `verbose`: Boolean. Prints console statements of the module filepath and updated `import()` during the webpack build. Useful for debugging your custom configurations.
 * `match`: `String(module|import)`. Sets how globs are matched, either the module file path or the `import()` path. Defaults to `'module'`.
