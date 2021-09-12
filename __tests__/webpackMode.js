@@ -6,6 +6,7 @@ describe('webpackMode', () => {
     const testImportPath = './some/import/path'
 
     expect(webpackMode(testPath, testImportPath, true)).toEqual('webpackMode: "lazy"')
+    expect(webpackMode(testPath, testImportPath, false)).toEqual('')
     expect(webpackMode(testPath, testImportPath, 'eager')).toEqual('webpackMode: "eager"')
     expect(webpackMode(testPath, testImportPath, () => 'lazy-once')).toEqual(
       'webpackMode: "lazy-once"'
@@ -13,9 +14,14 @@ describe('webpackMode', () => {
     expect(webpackMode(testPath, testImportPath, () => 'invalid')).toEqual('')
     expect(
       webpackMode(testPath, testImportPath, {
-        config: { mode: () => 'lazy', active: () => true }
+        config: { mode: 'lazy', active: () => true }
       })
     ).toEqual('webpackMode: "lazy"')
+    expect(
+      webpackMode(testPath, testImportPath, {
+        config: { mode: () => 'weak' }
+      })
+    ).toEqual('webpackMode: "weak"')
     expect(
       webpackMode(testPath, testImportPath, {
         config: { mode: 'weak' },

@@ -8,7 +8,7 @@ const configSchema = {
       oneOf: [{ type: 'boolean' }, { instanceof: 'Function' }]
     },
     mode: {
-      instanceof: 'Function'
+      oneOf: [{ enum: validModes }, { instanceof: 'Function' }]
     }
   },
   additionalProperties: false
@@ -31,17 +31,24 @@ const schema = {
 }
 const defaultConfig = {
   active: true,
-  mode: () => 'lazy'
+  mode: 'lazy'
 }
 const getConfig = (value, filepath) => {
   if (value === true) {
     return defaultConfig
   }
 
+  if (value === false) {
+    return {
+      ...defaultConfig,
+      active: false
+    }
+  }
+
   if (typeof value === 'string') {
     return {
       ...defaultConfig,
-      mode: () => value,
+      mode: value,
       active: validModes.includes(value)
     }
   }
@@ -62,23 +69,30 @@ const getConfig = (value, filepath) => {
   return config
 }
 const webpackMode = (filepath, importPath, value) => {
+  let mode = ''
   const config = getConfig(value, filepath)
   const isActive =
     typeof config.active === 'function'
       ? config.active(filepath, importPath)
       : config.active
 
-  if (!isActive || typeof config.mode !== 'function') {
+  if (!isActive) {
     return ''
   }
 
-  const configMode = config.mode(filepath, importPath)
+  if (typeof config.mode === 'function') {
+    mode = config.mode(filepath, importPath)
+  }
 
-  if (!validModes.includes(configMode)) {
+  if (typeof config.mode === 'string') {
+    mode = config.mode
+  }
+
+  if (!validModes.includes(mode)) {
     return ''
   }
 
-  return `webpackMode: "${configMode}"`
+  return `webpackMode: "${mode}"`
 }
 
 export { webpackMode, schema }

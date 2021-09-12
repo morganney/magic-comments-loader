@@ -44,6 +44,13 @@ const getConfig = (
     return defaultConfig
   }
 
+  if (value === false) {
+    return {
+      ...defaultConfig,
+      active: false
+    }
+  }
+
   if (Array.isArray(value) || typeof value === 'string') {
     return {
       ...defaultConfig,

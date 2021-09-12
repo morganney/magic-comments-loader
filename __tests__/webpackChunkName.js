@@ -9,6 +9,7 @@ describe('webpackChunkName', () => {
     expect(webpackChunkName(testPath, testImportPath, true)).toEqual(
       'webpackChunkName: "some-import-path"'
     )
+    expect(webpackChunkName(testPath, testImportPath, false)).toEqual('')
     expect(webpackChunkName(testPath, testImportPath, 'some/**/*.js')).toEqual(
       'webpackChunkName: "some-import-path"'
     )
