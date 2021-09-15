@@ -53,5 +53,19 @@ describe('getCommenter', () => {
         webpackChunkName: false
       })('import("./some/test/module")', '"./some/test/module"')
     ).toBe('import("./some/test/module")')
+
+    expect(
+      getCommenter('some/file/path.js', {
+        webpackChunkName: false,
+        webpackInclude: () => /path\/.+\.json$/
+      })('import("./some/test/module")', '"./some/test/module"')
+    ).toBe('import(/* webpackInclude: /path\\/.+\\.json$/ */ "./some/test/module")')
+
+    expect(
+      getCommenter('some/file/path.js', {
+        webpackChunkName: false,
+        webpackExclude: () => /path\/.+\.json$/
+      })('import("./some/test/module")', '"./some/test/module"')
+    ).toBe('import(/* webpackExclude: /path\\/.+\\.json$/ */ "./some/test/module")')
   })
 })
