@@ -4,6 +4,8 @@ import { webpackIgnore } from './webpackIgnore.js'
 import { webpackPreload } from './webpackPreload.js'
 import { webpackPrefetch } from './webpackPrefetch.js'
 import { webpackExports } from './webpackExports.js'
+import { webpackInclude } from './webpackInclude.js'
+import { webpackExclude } from './webpackExclude.js'
 
 const commentFor = {
   webpackChunkName,
@@ -11,7 +13,9 @@ const commentFor = {
   webpackIgnore,
   webpackPreload,
   webpackPrefetch,
-  webpackExports
+  webpackExports,
+  webpackInclude,
+  webpackExclude
 }
 
 export { commentFor }

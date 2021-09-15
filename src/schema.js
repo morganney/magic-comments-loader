@@ -4,6 +4,8 @@ import { schema as webpackIgnoreSchema } from './webpackIgnore.js'
 import { schema as webpackPrefetchSchema } from './webpackPrefetch.js'
 import { schema as webpackPreloadSchema } from './webpackPreload.js'
 import { schema as webpackExportsSchema } from './webpackExports.js'
+import { schema as webpackIncludeSchema } from './webpackInclude.js'
+import { schema as webpackExcludeSchema } from './webpackExclude.js'
 
 const schema = {
   type: 'object',
@@ -19,7 +21,9 @@ const schema = {
     webpackIgnore: webpackIgnoreSchema,
     webpackPrefetch: webpackPrefetchSchema,
     webpackPreload: webpackPreloadSchema,
-    webpackExports: webpackExportsSchema
+    webpackExports: webpackExportsSchema,
+    webpackInclude: webpackIncludeSchema,
+    webpackExclude: webpackExcludeSchema
   },
   additionalProperties: false
 }

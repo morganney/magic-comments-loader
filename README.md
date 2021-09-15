@@ -1,15 +1,20 @@
 # [`magic-comments-loader`](https://www.npmjs.com/package/magic-comments-loader)
 
+![CI](https://github.com/morganney/magic-comments-loader/actions/workflows/ci.yml/badge.svg)
+[![codecov](https://codecov.io/gh/morganney/magic-comments-loader/branch/master/graph/badge.svg?token=1DWQL43B8V)](https://codecov.io/gh/morganney/magic-comments-loader)
+
 Keep your source code clean, add [magic coments](https://webpack.js.org/api/module-methods/#magic-comments) to your dynamic `import()` statements at build time.
 
 NOTE: **This loader ignores dynamic imports that already include comments of any kind**.
 
-Magic comments supported:
+All magic comments are supported:
 * `webpackChunkName`
 * `webpackMode`
 * `webpackIgnore`
 * [`webpackPreload`](https://webpack.js.org/guides/code-splitting/#prefetchingpreloading-modules)
 * [`webpackPrefetch`](https://webpack.js.org/guides/code-splitting/#prefetchingpreloading-modules)
+* `webpackInclude`
+* `webpackExclude`
 * `webpackExports`
 
 ## Usage
@@ -21,20 +26,18 @@ If you must, e.g. your comment is referencing usage of dynamic imports, then the
 
 ```js
 // import('some-ignored-module')
+
 /* Some comment about a dynamic import('module') */
-```
 
-If you must have a multiline comment then this style is ok (only one `import()` per comment line preceded by an asterisk):
-
-```js
 /**
+ * Some multiline comment, only use one import() per line.
  * Comment about import('module/one')
  * Comment about import('module/two')
  * import('module/three'), etc.
  */
 ```
 
-This module uses a RegExp not a parser. If you would like to add better support for ignoring `import()` behind multiline comments please open a pull request. See some more [examples on regexr](https://regexr.com/65fg0).
+This module uses a RegExp not a parser. If you would like to add better support for ignoring `import()` behind multiline comments please open a pull request.
 
 ### Configuration
 
@@ -42,7 +45,7 @@ Add this inside your `webpack.config.js`.
 
 #### Without options
 
-Adds `webpackChunkName` to all dynamic imports (same as `webpackChunkName: true` when using options).
+Adds `/* webpackChunkName: "path-to-module" */` to all dynamic imports (same as `webpackChunkName: true` when using options).
 
 ```js
 module: {
@@ -72,7 +75,7 @@ module: {
           webpackChunkName: true,
           webpackMode: 'lazy',
           webpackIgnore: 'src/ignore/**/*.js',
-          webpackPrefetch: 'src/prefetch/**/*.js'
+          webpackPrefetch: 'src/prefetch/**/*.js',
           webpackPreload: [
             'src/preload/**/*.js',
             '!src/preload/skip/**/*.js'
@@ -111,9 +114,13 @@ module: {
               mode: 'lazy-once'
             }
           },
-          webpackIgnore: {
+          webpackInclude: {
             config: {
-              active: false
+              include: (modulePath, importPath) => {
+                if (/locales\/\${language}/.test(importPath)) {
+                  return /\.json$/
+                }
+              }
             }
           }
         }
@@ -276,3 +283,11 @@ These are the options that can be configured under the loader `options`. When us
   * `Function`: `(modulePath, importPath) => [String(<module names|default>)]`. Return falsy value to skip.
   * `config.active`: Boolean | `(modulePath, importPath) => Boolean`. Returning `false` does not add the comment.
   * `config.exports`: `(modulePath, importPath) => [String(<module names|default>)]`. Return falsy value to skip.
+* `webpackInclude`
+  * `Function`: `(modulePath, importPath) => RegExp`. Return falsy value to skip.
+  * `config.active`: Boolean | `(modulePath, importPath) => Boolean`. Returning `false` does not add the comment.
+  * `config.include`: `(modulePath, importPath) => RegExp`. Return falsy value to skip.
+* `webpackExclude`
+  * `Function`: `(modulePath, importPath) => RegExp`. Return falsy value to skip.
+  * `config.active`: Boolean | `(modulePath, importPath) => Boolean`. Returning `false` does not add the comment.
+  * `config.exclude`: `(modulePath, importPath) => RegExp`. Return falsy value to skip.
