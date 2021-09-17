@@ -1,6 +1,6 @@
 {
   "name": "magic-comments-loader",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Add webpack magic comments to your dynamic imports during build time",
   "main": "dist",
   "type": "module",
@@ -43,7 +43,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-jest": "^24.4.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "jest": "^27.1.0",
+    "jest": "^27.1.1",
     "memfs": "^3.2.4",
     "prettier": "^2.3.2",
     "webpack": "^5.52.0"

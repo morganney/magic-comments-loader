@@ -21,24 +21,6 @@ All magic comments are supported:
 
 First `npm install magic-comments-loader`.
 
-Try *not* to have dynamic `import()` statements behind [comments](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#comments). **It is better to remove unused code in production**.
-If you must, e.g. your comment is referencing usage of dynamic imports, then these styles are ok:
-
-```js
-// import('some-ignored-module')
-
-/* Some comment about a dynamic import('module') */
-
-/**
- * Some multiline comment, only use one import() per line.
- * Comment about import('module/one')
- * Comment about import('module/two')
- * import('module/three'), etc.
- */
-```
-
-This module uses a RegExp not a parser. If you would like to add better support for ignoring `import()` behind multiline comments please open a pull request.
-
 ### Configuration
 
 Add this inside your `webpack.config.js`.
