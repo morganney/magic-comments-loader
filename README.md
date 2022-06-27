@@ -17,17 +17,15 @@ All magic comments are supported:
 * `webpackExclude`
 * `webpackExports`
 
-## Usage
+## Getting Started
 
-First `npm install magic-comments-loader`.
+First install `magic-comments-loader`:
 
-### Configuration
+```
+npm install magic-comments-loader
+```
 
-Add this inside your `webpack.config.js`.
-
-#### Without options
-
-Adds `/* webpackChunkName: "path-to-module" */` to all dynamic imports (same as `webpackChunkName: true` when using options).
+Next add the loader to your `webpack` config:
 
 ```js
 module: {
@@ -41,7 +39,23 @@ module: {
 }
 ```
 
-#### With options
+Then given a **file.js** with the following import:
+
+```js
+const dynamicModule = await import('./path/to/module.js')
+```
+
+While running `webpack` the import inside **file.js** becomes:
+
+```js
+const dynamicModule = await import(/* webpackChunkName: "path-to-module" */ './path/to/module.js')
+```
+
+## Configuration
+
+The above webpack configuration will add `webpackChunkName` magic comments to all dynamic imports (same as `webpackChunkName: true` when using options) using the hyphenated import path as the chunk name. The loader also supports configuration with options.
+
+### With options
 
 The loader `options` is an object with keys corresponding to the names of supported magic comments. The following comments have a default behavior and do not require configuration beyond specifying where they should be applied (globally, or to certain files).
 
@@ -69,7 +83,7 @@ module: {
 }
 ```
 
-#### With `config` options
+### With `config` options
 
 For more control, all comments support a configuration object with two supported keys, `config` and `overrides`. The `config` key is an object used to specifiy [comment options](#options). The [`overrides`](#overrides) key is defined below.
 
@@ -112,7 +126,7 @@ module: {
 }
 ```
 
-#### Overrides
+### Overrides
 
 You can also override the configuration passed in the `config` key by using `overrides`. It is an array of objects that look like:
 
@@ -194,33 +208,6 @@ module: {
     }
   ]
 }
-```
-
-## Magic Comments
-
-With loader options configured like
-
-```js
-  {
-    loader: 'magic-comments-loader',
-    options: {
-      webpackChunkName: true,
-      webpackPrefetch: 'src/some/module.js',
-      webpackMode: 'eager'
-    }
-  }
-```
-
-an import statement inside `src/some/module.js` like
-
-```js
-const dynamicModule = await import('./path/to/module.js')
-```
-
-becomes
-
-```js
-const dynamicModule = await import(/* webpackChunkName: "path-to-module", webpackPrefetch: true, webpackMode: "eager" */ './path/to/module.js')
 ```
 
 ## Options
