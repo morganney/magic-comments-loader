@@ -51,9 +51,92 @@ While running `webpack` the import inside **file.js** becomes:
 const dynamicModule = await import(/* webpackChunkName: "path-to-module" */ './path/to/module.js')
 ```
 
+## Examples
+
+Below are some basic usage examples for some of the supported magic comments.
+
+### webpackChunkName
+
+Add `webpackChunkName` magic comments to **all** of your dynamic imports using the hyphenated path as the chunk name.
+
+```js
+module: {
+  rules: [
+    {
+      test: /\.js$/,
+      exclude: /node_modules/,
+      use: ['magic-comments-loader']
+    }
+  ]
+}
+```
+
+Or using the configuration options you can change the chunk name to the module's filename (instead of the full hyphenated path).
+
+```js
+module: {
+  rules: [
+    {
+      test: /\.js$/,
+      exclude: /node_modules/,
+      use: {
+        loader: 'magic-comments-loader',
+        options: {
+          webpackChunkName: {
+            config: {
+              basename: true
+            }
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+### webpackIgnore
+
+Have webpack ignore **all** dynamic imports and use the native `import()`, for instance if you wanted to opt out of code-splitting or use native ES Modules.
+
+```js
+module: {
+  rules: [
+    {
+      test: /\.js$/,
+      exclude: /node_modules/,
+      use: {
+        loader: 'magic-comments-loader',
+        options: {
+          webpackIgnore: true
+        }
+      }
+    }
+  ]
+}
+```
+
+Or only for modules in a specific directory.
+
+```js
+module: {
+  rules: [
+    {
+      test: /\.js$/,
+      exclude: /node_modules/,
+      use: {
+        loader: 'magic-comments-loader',
+        options: {
+          webpackIgnore: 'src/esm/**/*.js'
+        }
+      }
+    }
+  ]
+}
+```
+
 ## Configuration
 
-The above webpack configuration will add `webpackChunkName` magic comments to all dynamic imports (same as `webpackChunkName: true` when using options) using the hyphenated import path as the chunk name. The loader also supports configuration with options.
+The loader supports configuration with options and overrides for each magic comment.
 
 ### With options
 
@@ -236,7 +319,7 @@ These are the options that can be configured under the loader `options`. When us
   * `Function`: `(modulePath, importPath) => Boolean`. Returning `false` does not add the comment.
   * `config.active`: Boolean | `(modulePath, importPath) => Boolean`. Returning `false` does not add the comment.
 * `webpackIgnore`
-  * `true`: Adds `webpackIgnore` comments to **all** dynamic imports. **You don't want to do this**.
+  * `true`: Adds `webpackIgnore` comments to **all** dynamic imports.
   * `false`: Disables adding the `webpackIgnore` comment globally. This is the default.
   * `['/src/**/*.js']`: Adds the comment with a value of `true` when the glob(s) match a path from a `match` path.
   * `Function`: `(modulePath, importPath) => Boolean`. Returning `false` does not add the comment.
