@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v3.5.2
       - name: Setup Node
-        uses: actions/setup-node@v2.4.0
+        uses: actions/setup-node@v3.6.0
         with:
-          node-version: '16.5.0'
+          node-version: '18.16.0'
       - name: Install Dependencies
         run: npm ci
       - name: Save error log
@@ -28,6 +28,6 @@ jobs:
       - name: Lint
         run: npm run lint
       - name: Push to NPM registry
-        uses: JS-DevTools/npm-publish@v1.0.0
+        uses: JS-DevTools/npm-publish@v2.1.0
         with:
           token: ${{ secrets.NPM_AUTH_TOKEN }}

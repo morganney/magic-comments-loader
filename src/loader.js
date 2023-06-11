@@ -1,4 +1,3 @@
-import { getOptions } from 'loader-utils'
 import { validate } from 'schema-utils'
 
 import { schema } from './schema.js'
@@ -6,7 +5,7 @@ import { getCommenter } from './comment.js'
 import { dynamicImportsWithoutComments } from './util.js'
 
 const loader = function (source, map, meta) {
-  const options = getOptions(this)
+  const options = this.getOptions()
   const optionKeys = Object.keys(options)
   const logger = this.getLogger('MCL')
 

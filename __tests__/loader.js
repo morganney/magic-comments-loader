@@ -3,7 +3,12 @@ import { jest } from '@jest/globals'
 import { loader } from '../src/loader.js'
 
 describe('loader', () => {
-  const getStub = (options = {}) => ({
+  const getStub = (
+    options = {
+      webpackChunkName: true,
+      webpackMode: 'lazy'
+    }
+  ) => ({
     utils: {
       contextify: () => './some/path.js'
     },
@@ -11,25 +16,17 @@ describe('loader', () => {
     callback: jest.fn((err, commentedSrc) => {
       return commentedSrc
     }),
-    query: {
-      webpackChunkName: true,
-      webpackMode: 'lazy'
-    },
-    ...options
+    getOptions: jest.fn(() => options)
   })
 
   it('modifies dynamic imports in source files', async () => {
     const stub = getStub()
     const src = 'import("src/to/file")'
     const stubInvalid = getStub({
-      query: {
-        webpackChunkName: true,
-        webpackMode: 'invalid'
-      }
+      webpackChunkName: true,
+      webpackMode: 'invalid'
     })
-    const defaultStub = getStub({
-      query: {}
-    })
+    const defaultStub = getStub({})
 
     loader.call(stub, src)
     expect(stub.callback).toHaveBeenCalledWith(
