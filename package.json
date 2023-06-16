@@ -4,9 +4,16 @@
   "description": "Add webpack magic comments to your dynamic imports at build time",
   "main": "dist",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/cjs/index.cjs",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
   "engines": {
-    "node": ">=12.13.0",
-    "npm": ">=9.5.1"
+    "node": ">=12.17.0"
   },
   "repository": {
     "type": "git",
@@ -16,7 +23,10 @@
     "url": "https://github.com/morganney/magic-comments-loader/issues"
   },
   "scripts": {
-    "prepack": "node --experimental-json-modules ./prepack.js",
+    "prepack": "npm run build",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "babel src --out-dir dist",
+    "build:cjs": "BABEL_ENV=cjs babel src --out-dir dist/cjs --out-file-extension .cjs && node cjs.js",
     "lint": "eslint . src __tests__ --ext .js,.cjs",
     "lint:fix": "npm run lint -- --fix",
     "test": "node --experimental-vm-modules --no-warnings ./node_modules/.bin/jest"

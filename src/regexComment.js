@@ -1,4 +1,4 @@
-import { getOverrideConfig, getOverrideSchema } from './util'
+import { getOverrideConfig, getOverrideSchema } from './util.js'
 
 const getRegexComment = type => {
   const configSchema = {

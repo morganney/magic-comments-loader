@@ -1,4 +1,4 @@
-import { getOverrideConfig, getOverrideSchema } from './util'
+import { getOverrideConfig, getOverrideSchema } from './util.js'
 
 const validModes = ['lazy', 'lazy-once', 'eager', 'weak']
 const configSchema = {
