@@ -27,6 +27,20 @@ describe('loader', () => {
       webpackMode: 'invalid'
     })
     const defaultStub = getStub({})
+    const multilineSrc = `
+      reg([
+        { module: import('@pkg/button'), elem: 'Button' },
+        { module: import('@pkg/collapse'), elem: 'Collapse' },
+        { module: import('@pkg/icon'), elem: 'Icon' },
+      ]);
+    `
+    const multilineSrcExpected = `
+      reg([
+        { module: import(/* webpackChunkName: "@pkg-button" */ '@pkg/button'), elem: 'Button' },
+        { module: import(/* webpackChunkName: "@pkg-collapse" */ '@pkg/collapse'), elem: 'Collapse' },
+        { module: import(/* webpackChunkName: "@pkg-icon" */ '@pkg/icon'), elem: 'Icon' },
+      ]);
+    `
 
     loader.call(stub, src)
     expect(stub.callback).toHaveBeenCalledWith(
@@ -42,10 +56,10 @@ describe('loader', () => {
       undefined,
       undefined
     )
-    loader.call(defaultStub, src)
+    loader.call(defaultStub, multilineSrc)
     expect(defaultStub.callback).toHaveBeenCalledWith(
       null,
-      'import(/* webpackChunkName: "src-to-file" */ "src/to/file")',
+      multilineSrcExpected,
       undefined,
       undefined
     )
