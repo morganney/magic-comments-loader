@@ -10,7 +10,6 @@ const configSchema = {
       instanceof: 'Function'
     }
   },
-  required: ['exports'],
   additionalProperties: false
 }
 const schema = {

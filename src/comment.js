@@ -7,16 +7,10 @@ const getCommenter =
     const bareImportPath = importPath.replace(/['"`]/g, '')
     const { verbose, match, ...magicCommentOptions } = options
     const magicComment = Object.keys(magicCommentOptions)
-      .map(key => {
-        const option = magicCommentOptions[key]
-
-        if (option) {
-          return commentFor[key](filepath, bareImportPath, option, match)
-        }
-
-        return null
-      })
-      .filter(comment => comment)
+      .map(key =>
+        commentFor[key](filepath, bareImportPath, magicCommentOptions[key], match)
+      )
+      .filter(Boolean)
     const magicImport = rgxMatch.replace(
       capturedImportPath,
       magicComment.length > 0

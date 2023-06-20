@@ -11,6 +11,9 @@
           "modules": "commonjs"
         }]
       ]
+    },
+    "test": {
+      "plugins": ["babel-plugin-istanbul"]
     }
   }
 }

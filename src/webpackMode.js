@@ -45,15 +45,7 @@ const getConfig = (value, filepath) => {
     }
   }
 
-  if (typeof value === 'string') {
-    return {
-      ...defaultConfig,
-      mode: value,
-      active: validModes.includes(value)
-    }
-  }
-
-  if (typeof value === 'function') {
+  if (typeof value === 'string' || typeof value === 'function') {
     return {
       ...defaultConfig,
       mode: value
