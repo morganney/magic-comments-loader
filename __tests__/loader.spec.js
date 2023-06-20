@@ -260,6 +260,134 @@ describe('loader', () => {
     )
   })
 
+  it('adds webpackFetchPriority magic comments', async () => {
+    let stats = await build(entry, {
+      use: {
+        loader: loaderPath,
+        options: {
+          webpackFetchPriority: true
+        }
+      }
+    })
+    let output = stats.toJson({ source: true }).modules[0].source
+
+    expect(output).toEqual(
+      expect.stringContaining(
+        `import(/* webpackFetchPriority: "auto" */ './folder/module.js')`
+      )
+    )
+
+    stats = await build(entry, {
+      use: {
+        loader: loaderPath,
+        options: {
+          webpackFetchPriority: false
+        }
+      }
+    })
+    output = stats.toJson({ source: true }).modules[0].source
+    expect(output).toEqual(expect.stringContaining(`import('./folder/module.js')`))
+
+    stats = await build(entry, {
+      use: {
+        loader: loaderPath,
+        options: {
+          webpackFetchPriority: 'high'
+        }
+      }
+    })
+    output = stats.toJson({ source: true }).modules[0].source
+    expect(output).toEqual(
+      expect.stringContaining(
+        `import(/* webpackFetchPriority: "high" */ './folder/module.js')`
+      )
+    )
+
+    stats = await build(entry, {
+      use: {
+        loader: loaderPath,
+        options: {
+          webpackFetchPriority: (modulePath, importPath) => {
+            if (importPath.includes('module')) {
+              return 'high'
+            }
+
+            return false
+          }
+        }
+      }
+    })
+    output = stats.toJson({ source: true }).modules[0].source
+    expect(output).toEqual(
+      expect.stringContaining(
+        `import(/* webpackFetchPriority: "high" */ './folder/module.js')`
+      )
+    )
+
+    stats = await build(entry, {
+      use: {
+        loader: loaderPath,
+        options: {
+          webpackFetchPriority: {
+            config: {
+              fetchPriority: 'low'
+            }
+          }
+        }
+      }
+    })
+    output = stats.toJson({ source: true }).modules[0].source
+    expect(output).toEqual(
+      expect.stringContaining(
+        `import(/* webpackFetchPriority: "low" */ './folder/module.js')`
+      )
+    )
+
+    stats = await build(entry, {
+      use: {
+        loader: loaderPath,
+        options: {
+          webpackFetchPriority: {
+            config: {
+              fetchPriority: 'low'
+            },
+            overrides: [
+              {
+                files: '__fixtures__/**/*.js',
+                config: {
+                  fetchPriority: () => 'invalid priority'
+                }
+              }
+            ]
+          }
+        }
+      }
+    })
+    output = stats.toJson({ source: true }).modules[0].source
+    expect(output).toEqual(expect.stringContaining(`import('./folder/module.js')`))
+
+    stats = await build(entry, {
+      use: {
+        loader: loaderPath,
+        options: {
+          webpackFetchPriority: {
+            config: {
+              active: (modulePath, importPath) => {
+                if (importPath.endsWith('.js')) {
+                  return false
+                }
+
+                return true
+              }
+            }
+          }
+        }
+      }
+    })
+    output = stats.toJson({ source: true }).modules[0].source
+    expect(output).toEqual(expect.stringContaining(`import('./folder/module.js')`))
+  })
+
   it('adds webpackIgnore magic comments', async () => {
     let stats = await build(entry, {
       use: {
@@ -777,8 +905,8 @@ describe('loader', () => {
         options: {
           verbose: true,
           webpackChunkName: true,
-          webpackMode: 'lazy',
-          webpackInclude: /\.json$/
+          webpackFetchPriority: 'high',
+          webpackMode: 'lazy'
         }
       }
     })
@@ -786,7 +914,7 @@ describe('loader', () => {
 
     expect(output).toEqual(
       expect.stringContaining(
-        `import(/* webpackChunkName: "folder-module", webpackMode: "lazy", webpackInclude: /\\.json$/ */ './folder/module.js')`
+        `import(/* webpackChunkName: "folder-module", webpackFetchPriority: "high", webpackMode: "lazy" */ './folder/module.js')`
       )
     )
   })

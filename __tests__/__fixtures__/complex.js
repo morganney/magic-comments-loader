@@ -1,6 +1,6 @@
 import('./folder/module.js').then(() => {
   const slug = 'module'
-  const json = import(`./${slug}.json`)
+  const json = `foo-bar-baz-${import(`./${slug}.json`)}abc`
 
   return json
 })
@@ -40,3 +40,5 @@ Promise.all([
   import('@pkg/b'),
   import('@pkg/c')
 ])
+
+/* import in comment import('@fake/module') */

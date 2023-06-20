@@ -1,6 +1,6 @@
 {
   "name": "magic-comments-loader",
-  "version": "1.4.3",
+  "version": "1.5.0",
   "description": "Add webpack magic comments to your dynamic imports at build time",
   "main": "dist",
   "type": "module",
@@ -29,9 +29,9 @@
     "build:cjs": "BABEL_ENV=cjs babel src --out-dir dist/cjs --out-file-extension .cjs && node cjs.js",
     "lint": "eslint . src __tests__ --ext .js,.cjs",
     "lint:fix": "npm run lint -- --fix",
-    "test:vm": "node --experimental-vm-modules --no-warnings ./node_modules/.bin/jest",
+    "test:unit": "node --experimental-vm-modules --no-warnings ./node_modules/.bin/jest",
     "test:spec": "NODE_OPTIONS='--loader=babel-register-esm --no-warnings' BABEL_ENV=test jest -c jest.config.spec.js",
-    "test": "npm run test:vm && npm run test:spec"
+    "test": "npm run test:unit && npm run test:spec"
   },
   "keywords": [
     "webpack",
@@ -61,7 +61,7 @@
     "jest-light-runner": "^0.5.0",
     "memfs": "^4.0.0",
     "prettier": "^2.8.8",
-    "webpack": "^5.86.0"
+    "webpack": "^5.87.0"
   },
   "dependencies": {
     "loader-utils": "^3.2.1",

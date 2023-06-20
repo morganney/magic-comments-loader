@@ -1,4 +1,5 @@
 import { schema as webpackChunkNameSchema } from './webpackChunkName.js'
+import { schema as webpackFetchPrioritySchema } from './webpackFetchPriority.js'
 import { schema as webpackModeSchema } from './webpackMode.js'
 import { schema as webpackIgnoreSchema } from './webpackIgnore.js'
 import { schema as webpackPrefetchSchema } from './webpackPrefetch.js'
@@ -17,6 +18,7 @@ const schema = {
       enum: ['module', 'import']
     },
     webpackChunkName: webpackChunkNameSchema,
+    webpackFetchPriority: webpackFetchPrioritySchema,
     webpackMode: webpackModeSchema,
     webpackIgnore: webpackIgnoreSchema,
     webpackPrefetch: webpackPrefetchSchema,
