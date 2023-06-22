@@ -1,4 +1,4 @@
-import { getOverrideConfig, getOverrideSchema } from './util'
+import { getOverrideConfig, getOverrideSchema } from './util.js'
 
 const configSchema = {
   type: 'object',
@@ -10,7 +10,6 @@ const configSchema = {
       instanceof: 'Function'
     }
   },
-  required: ['exports'],
   additionalProperties: false
 }
 const schema = {

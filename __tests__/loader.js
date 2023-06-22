@@ -3,7 +3,12 @@ import { jest } from '@jest/globals'
 import { loader } from '../src/loader.js'
 
 describe('loader', () => {
-  const getStub = (options = {}) => ({
+  const getStub = (
+    options = {
+      webpackChunkName: true,
+      webpackMode: 'lazy'
+    }
+  ) => ({
     utils: {
       contextify: () => './some/path.js'
     },
@@ -11,25 +16,31 @@ describe('loader', () => {
     callback: jest.fn((err, commentedSrc) => {
       return commentedSrc
     }),
-    query: {
-      webpackChunkName: true,
-      webpackMode: 'lazy'
-    },
-    ...options
+    getOptions: jest.fn(() => options)
   })
 
   it('modifies dynamic imports in source files', async () => {
     const stub = getStub()
     const src = 'import("src/to/file")'
     const stubInvalid = getStub({
-      query: {
-        webpackChunkName: true,
-        webpackMode: 'invalid'
-      }
+      webpackChunkName: true,
+      webpackMode: 'invalid'
     })
-    const defaultStub = getStub({
-      query: {}
-    })
+    const defaultStub = getStub({})
+    const multilineSrc = `
+      reg([
+        { module: import('@pkg/button'), elem: 'Button' },
+        { module: import('@pkg/collapse'), elem: 'Collapse' },
+        { module: import('@pkg/icon'), elem: 'Icon' },
+      ]);
+    `
+    const multilineSrcExpected = `
+      reg([
+        { module: import(/* webpackChunkName: "@pkg-button" */ '@pkg/button'), elem: 'Button' },
+        { module: import(/* webpackChunkName: "@pkg-collapse" */ '@pkg/collapse'), elem: 'Collapse' },
+        { module: import(/* webpackChunkName: "@pkg-icon" */ '@pkg/icon'), elem: 'Icon' },
+      ]);
+    `
 
     loader.call(stub, src)
     expect(stub.callback).toHaveBeenCalledWith(
@@ -45,10 +56,10 @@ describe('loader', () => {
       undefined,
       undefined
     )
-    loader.call(defaultStub, src)
+    loader.call(defaultStub, multilineSrc)
     expect(defaultStub.callback).toHaveBeenCalledWith(
       null,
-      'import(/* webpackChunkName: "src-to-file" */ "src/to/file")',
+      multilineSrcExpected,
       undefined,
       undefined
     )

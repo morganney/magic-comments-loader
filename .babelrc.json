@@ -1,13 +1,19 @@
 {
   "presets": [
-    [
-      "@babel/preset-env",
-      {
-        "targets": {
-          "browsers": ["current node"]
-        },
-        "modules": "commonjs"
-      }
-    ]
-  ]
+    ["@babel/preset-env", {
+        "modules": false
+    }]
+  ],
+  "env": {
+    "cjs": {
+      "presets": [
+        ["@babel/preset-env", {
+          "modules": "commonjs"
+        }]
+      ]
+    },
+    "test": {
+      "plugins": ["babel-plugin-istanbul"]
+    }
+  }
 }

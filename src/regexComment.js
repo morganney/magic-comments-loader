@@ -1,4 +1,4 @@
-import { getOverrideConfig, getOverrideSchema } from './util'
+import { getOverrideConfig, getOverrideSchema } from './util.js'
 
 const getRegexComment = type => {
   const configSchema = {
@@ -9,14 +9,17 @@ const getRegexComment = type => {
       },
       include: {
         oneOf: [{ instanceof: 'Function' }, { instanceof: 'RegExp' }]
+      },
+      exclude: {
+        oneOf: [{ instanceof: 'Function' }, { instanceof: 'RegExp' }]
       }
     },
-    required: [type],
     additionalProperties: false
   }
   const schema = {
     oneOf: [
       { instanceof: 'Function' },
+      { instanceof: 'RegExp' },
       {
         type: 'object',
         properties: {
@@ -29,7 +32,7 @@ const getRegexComment = type => {
     ]
   }
   const getConfig = (value, filepath) => {
-    if (typeof value === 'function') {
+    if (typeof value === 'function' || value instanceof RegExp) {
       return {
         active: true,
         [type]: value

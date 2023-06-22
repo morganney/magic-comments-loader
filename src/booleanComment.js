@@ -1,4 +1,4 @@
-import { getOverrideSchema, pathIsMatch, importPrefix } from './util'
+import { getOverrideSchema, pathIsMatch, importPrefix } from './util.js'
 
 const defaultSchema = {
   type: 'object',
