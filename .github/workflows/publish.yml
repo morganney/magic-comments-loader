@@ -27,6 +27,8 @@ jobs:
         run: npm test
       - name: Lint
         run: npm run lint
+      - name: Pack
+        run: npm pack
       - name: Push to NPM registry
         uses: JS-DevTools/npm-publish@v2.1.0
         with:
