@@ -19,7 +19,7 @@ Next add the loader to your `webpack.config.js` file:
 module: {
   rules: [
     {
-      test: /\.[j]sx?$/,
+      test: /\.jsx?$/,
       use: ['magic-comments-loader']
     }
   ]
