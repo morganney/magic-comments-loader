@@ -10,7 +10,9 @@ describe('getCommenter', () => {
       getCommenter(
         'some/file/path.js',
         {
-          webpackChunkName: true
+          magicCommentOptions: {
+            webpackChunkName: true
+          }
         },
         logger
       )('import("./some/test/module.js")', '"./some/test/module.js"')
@@ -20,11 +22,13 @@ describe('getCommenter', () => {
       getCommenter(
         'some/file/path.js',
         {
-          webpackChunkName: true,
-          webpackMode: 'eager',
-          webpackPrefetch: 'some/**/*.js',
-          webpackPreload: false,
-          webpackExports: () => ['a', 'b']
+          magicCommentOptions: {
+            webpackChunkName: true,
+            webpackMode: 'eager',
+            webpackPrefetch: 'some/**/*.js',
+            webpackPreload: false,
+            webpackExports: () => ['a', 'b']
+          }
         },
         logger
       )('import("./some/test/module")', '"./some/test/module"')
@@ -37,8 +41,10 @@ describe('getCommenter', () => {
         'some/file/path.js',
         {
           verbose: true,
-          webpackPreload: true,
-          webpackChunkName: true
+          magicCommentOptions: {
+            webpackPreload: true,
+            webpackChunkName: true
+          }
         },
         logger
       )('import("./some/test/module")', '"./some/test/module"')
@@ -50,7 +56,9 @@ describe('getCommenter', () => {
       getCommenter(
         'some/file/path.js',
         {
-          webpackIgnore: true
+          magicCommentOptions: {
+            webpackIgnore: true
+          }
         },
         logger
       )('import("./some/test/module")', '"./some/test/module"')
@@ -60,7 +68,9 @@ describe('getCommenter', () => {
       getCommenter(
         'some/file/path.js',
         {
-          webpackChunkName: 'some/**/*.js'
+          magicCommentOptions: {
+            webpackChunkName: 'some/**/*.js'
+          }
         },
         logger
       )('import("./some/test/module")', '"./some/test/module"')
@@ -70,7 +80,9 @@ describe('getCommenter', () => {
       getCommenter(
         'some/file/path.js',
         {
-          webpackExports: () => ['foo', 'bar']
+          magicCommentOptions: {
+            webpackExports: () => ['foo', 'bar']
+          }
         },
         logger
       )('import("./some/test/module")', '"./some/test/module"')
@@ -80,7 +92,9 @@ describe('getCommenter', () => {
       getCommenter(
         'some/file/path.js',
         {
-          webpackChunkName: false
+          magicCommentOptions: {
+            webpackChunkName: false
+          }
         },
         logger
       )('import("./some/test/module")', '"./some/test/module"')
@@ -90,8 +104,10 @@ describe('getCommenter', () => {
       getCommenter(
         'some/file/path.js',
         {
-          webpackChunkName: false,
-          webpackInclude: () => /path\/.+\.json$/
+          magicCommentOptions: {
+            webpackChunkName: false,
+            webpackInclude: () => /path\/.+\.json$/
+          }
         },
         logger
       )('import("./some/test/module")', '"./some/test/module"')
@@ -101,8 +117,10 @@ describe('getCommenter', () => {
       getCommenter(
         'some/file/path.js',
         {
-          webpackChunkName: false,
-          webpackExclude: () => /path\/.+\.json$/
+          magicCommentOptions: {
+            webpackChunkName: false,
+            webpackExclude: () => /path\/.+\.json$/
+          }
         },
         logger
       )('import("./some/test/module")', '"./some/test/module"')

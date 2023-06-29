@@ -14,6 +14,9 @@ const schema = {
     verbose: {
       type: 'boolean'
     },
+    mode: {
+      enum: ['parser', 'regexp']
+    },
     match: {
       enum: ['module', 'import']
     },

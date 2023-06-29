@@ -1,7 +1,6 @@
 import('./folder/module.js').then(() => {
   const slug = 'module'
   const json = `foo-bar-baz-${import(`./${slug}.json`)}abc`
-  const myString = 'abc,import("foo/bar")xyz' // In 'regexp' mode this string would be incorrectly targeted
 
   return json
 })
@@ -11,16 +10,7 @@ import('./folder/module.js').then(() => {
 import(/* some comment */ './folder/skip.js')
 
 const foo = './module.json'
-/**
- * regex will miss this one, however webpack does not support this syntax.
- * @see https://webpack.js.org/api/module-methods/#dynamic-expressions-in-import
- */
-const bar = import(foo)
-/*
-   This comment style will break the build in regexp mode if it
-   spans more than one line and includes import('module')
-   strings more than once. Like import('module2').
-*/
+const bar = import(foo) // regex will miss this one
 const reg = () => {}
 /**
  * import('@fake/module')

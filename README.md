@@ -3,7 +3,7 @@
 ![CI](https://github.com/morganney/magic-comments-loader/actions/workflows/ci.yml/badge.svg)
 [![codecov](https://codecov.io/gh/morganney/magic-comments-loader/branch/master/graph/badge.svg?token=1DWQL43B8V)](https://codecov.io/gh/morganney/magic-comments-loader)
 
-Keep your source code clean, add [magic coments](https://webpack.js.org/api/module-methods/#magic-comments) to your dynamic `import()` statements at build time.
+Keep your source code clean, add [magic comments](https://webpack.js.org/api/module-methods/#magic-comments) to your dynamic `import()` expressions at build time.
 
 ## Getting Started
 
@@ -19,7 +19,7 @@ Next add the loader to your `webpack.config.js` file:
 module: {
   rules: [
     {
-      test: /\.[jt]sx?$/,
+      test: /\.jsx?$/,
       use: ['magic-comments-loader']
     }
   ]
@@ -45,6 +45,7 @@ The `webpackChunkName` comment is added by default when registering the loader. 
 Most loader options can be defined with a [`CommentConfig`](#commentconfig) object to support overrides and  suboptions ([`CommentOptions`](#commentoptions)). Options that support globs use [`micromatch`](https://github.com/micromatch/micromatch) for pattern matching.
 
 * [`verbose`](#verbose)
+* [`mode`](#mode)
 * [`match`](#match)
 * [`webpackChunkName`](#webpackchunkname)
 * [`webpackFetchPriority`](#webpackfetchpriority)
@@ -94,6 +95,15 @@ boolean
 **default** `false`
 
 Prints console statements of the module filepath and updated `import()` during the webpack build. Useful for debugging.
+
+### `mode`
+**type**
+```ts
+'parser' | 'regexp'
+```
+**default** `'parser'`
+
+Sets how the loader finds dynamic import expressions in your source code, either using an [ECMAScript parser](https://github.com/acornjs/acorn), or a regular expression. Your mileage may vary when using `'regexp'`.
 
 ### `match`
 **type**
@@ -525,7 +535,7 @@ When using a [`CommentConfig`](#commentconfig) object, you can override the conf
 }
 ```
 
-The `files` and `config` keys are both required, where the former is glob string, or array thereof, and the latter is the associated magic comment's [`CommentOptions`](#commentoptions).
+The `files` and `config` keys are both required, where the former is a glob string, or an array thereof, and the latter is the associated magic comment's [`CommentOptions`](#commentoptions).
 
 Here's a more complete example of how overrides can be applied:
 
@@ -581,3 +591,27 @@ import(/* webpackMode: "lazy" */ './folder/module.js')
 import(/* webpackMode: "eager" */ './eager/module.js')
 import(/* webpackChunkName: "locales-[request]", webpackMode: "lazy-once" */ `./locales/${lang}.json`)
 ```
+
+### TypeScript
+
+When using TypeScript or experimental ECMAScript features <= [stage 3](https://tc39.es/process-document/), i.e. non spec compliant, you must chain the appropriate loaders with `magic-comments-loader` coming after.
+
+For example, if your project source code is written in TypeScript, and you use `babel-loader` to transpile and remove type annotations via `@babel/preset-typescript`, while `tsc` is used for type-checking only, chain loaders like this:
+
+**config**
+```js
+module: {
+  rules: [
+    {
+      test: /\.[jt]sx?$/,
+      // Webpack loader chains are processed in reverse order, i.e. last comes first.
+      use: [
+        'magic-comments-loader',
+        'babel-loader'
+      ]
+    }
+  ]
+}
+```
+
+You would configure `ts-loader` similarly, or any other loader that transpiles your source code into spec compliant ECMAScript.
