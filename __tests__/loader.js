@@ -1,8 +1,10 @@
 import { jest } from '@jest/globals'
+import logging from 'webpack/lib/logging/runtime.js'
 
 import { loader } from '../src/loader.js'
 
 describe('loader', () => {
+  const logger = logging.getLogger('MCL')
   const getStub = (
     options = {
       webpackChunkName: true,
@@ -12,10 +14,7 @@ describe('loader', () => {
     utils: {
       contextify: () => './some/path.js'
     },
-    getLogger: jest.fn(),
-    callback: jest.fn((err, commentedSrc) => {
-      return commentedSrc
-    }),
+    getLogger: jest.fn(() => logger),
     getOptions: jest.fn(() => options)
   })
 
@@ -23,10 +22,12 @@ describe('loader', () => {
     const stub = getStub()
     const src = 'import("src/to/file")'
     const stubInvalid = getStub({
+      verbose: true,
       webpackChunkName: true,
       webpackMode: 'invalid'
     })
     const defaultStub = getStub({})
+    const regexStub = getStub({ mode: 'regexp' })
     const multilineSrc = `
       reg([
         { module: import('@pkg/button'), elem: 'Button' },
@@ -42,26 +43,23 @@ describe('loader', () => {
       ]);
     `
 
-    loader.call(stub, src)
-    expect(stub.callback).toHaveBeenCalledWith(
-      null,
-      'import(/* webpackChunkName: "src-to-file", webpackMode: "lazy" */ "src/to/file")',
-      undefined,
-      undefined
+    expect(loader.call(stub, src)).toEqual(
+      expect.stringContaining(
+        'import(/* webpackChunkName: "src-to-file", webpackMode: "lazy" */ "src/to/file")'
+      )
     )
-    loader.call(stubInvalid, src)
-    expect(stubInvalid.callback).toHaveBeenCalledWith(
-      null,
-      'import(/* webpackChunkName: "src-to-file" */ "src/to/file")',
-      undefined,
-      undefined
+    expect(loader.call(stubInvalid, src)).toEqual(
+      expect.stringContaining(
+        'import(/* webpackChunkName: "src-to-file" */ "src/to/file")'
+      )
     )
-    loader.call(defaultStub, multilineSrc)
-    expect(defaultStub.callback).toHaveBeenCalledWith(
-      null,
-      multilineSrcExpected,
-      undefined,
-      undefined
+    expect(loader.call(defaultStub, multilineSrc)).toEqual(
+      expect.stringContaining(multilineSrcExpected)
+    )
+    expect(loader.call(regexStub, src)).toEqual(
+      expect.stringContaining(
+        'import(/* webpackChunkName: "src-to-file" */ "src/to/file")'
+      )
     )
   })
 })

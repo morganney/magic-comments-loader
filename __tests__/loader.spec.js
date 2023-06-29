@@ -919,7 +919,7 @@ describe('loader', () => {
     )
   })
 
-  it('parses most complex constructs for dynamic imports', async () => {
+  it('parses complex constructs for dynamic imports', async () => {
     let stats = await build('__fixtures__/complex.js')
     let output = stats.toJson({ source: true }).modules[0].source
 
@@ -952,9 +952,105 @@ describe('loader', () => {
       expect.stringContaining(`import(/* webpackChunkName: "@pkg-c" */ '@pkg/c')`)
     )
     expect(output).toEqual(
+      expect.stringContaining(`import(/* webpackChunkName: "foo" */ foo)`)
+    )
+    expect(output).toEqual(
+      expect.stringContaining(`import(/* some comment */ './folder/skip.js')`)
+    )
+    expect(output).toEqual(
+      expect.not.stringContaining(`import(/* webpackChunkName: "foo-bar" */ "foo/bar")`)
+    )
+    expect(output).toEqual(
       expect.not.stringContaining(
         `import(/* webpackChunkName: "@fake-module" */ '@fake/module')`
       )
     )
+  })
+
+  it('regexp mode finds dynamic imports in most complex constructs', async () => {
+    let stats = await build('__fixtures__/complex.regexp.js', {
+      use: {
+        loader: loaderPath,
+        options: {
+          mode: 'regexp',
+          verbose: true,
+          webpackChunkName: true
+        }
+      }
+    })
+    let output = stats.toJson({ source: true }).modules[0].source
+
+    expect(output).toEqual(
+      expect.stringContaining(
+        `import(/* webpackChunkName: "folder-module" */ './folder/module.js')`
+      )
+    )
+    expect(output).toEqual(
+      expect.stringContaining(
+        'import(/* webpackChunkName: "[request]" */ `./${slug}.json`)'
+      )
+    )
+    expect(output).toEqual(
+      expect.stringContaining(`import(/* webpackChunkName: "@pkg-foo" */ '@pkg/foo')`)
+    )
+    expect(output).toEqual(
+      expect.stringContaining(`import(/* webpackChunkName: "@pkg-bar" */ '@pkg/bar')`)
+    )
+    expect(output).toEqual(
+      expect.stringContaining(`import(/* webpackChunkName: "@pkg-baz" */ '@pkg/baz')`)
+    )
+    expect(output).toEqual(
+      expect.stringContaining(`import(/* webpackChunkName: "@pkg-a" */ '@pkg/a')`)
+    )
+    expect(output).toEqual(
+      expect.stringContaining(`import(/* webpackChunkName: "@pkg-b" */ '@pkg/b')`)
+    )
+    expect(output).toEqual(
+      expect.stringContaining(`import(/* webpackChunkName: "@pkg-c" */ '@pkg/c')`)
+    )
+    expect(output).toEqual(
+      expect.stringContaining(`import(/* some comment */ './folder/skip.js')`)
+    )
+    expect(output).toEqual(
+      expect.not.stringContaining(
+        `import(/* webpackChunkName: "@fake-module" */ '@fake/module')`
+      )
+    )
+    expect(output).toEqual(
+      expect.not.stringContaining(`import(/* webpackChunkName: "foo" */ foo)`)
+    )
+  })
+
+  it('regex mode also supports default webpackChunkName option', async () => {
+    let stats = await build('__fixtures__/complex.regexp.js', {
+      use: {
+        loader: loaderPath,
+        options: {
+          mode: 'regexp'
+        }
+      }
+    })
+    let output = stats.toJson({ source: true }).modules[0].source
+
+    expect(output).toEqual(
+      expect.stringContaining(
+        `import(/* webpackChunkName: "folder-module" */ './folder/module.js')`
+      )
+    )
+  })
+
+  it('regex mode correctly ignores invalid comment option values', async () => {
+    let stats = await build(entry, {
+      use: {
+        loader: loaderPath,
+        options: {
+          mode: 'regexp',
+          webpackMode: () => 'invalid'
+        }
+      }
+    })
+    let output = stats.toJson({ source: true }).modules[0].source
+
+    expect(output).toEqual(expect.stringContaining("import('./folder/module.js')"))
   })
 })

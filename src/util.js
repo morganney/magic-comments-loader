@@ -55,11 +55,15 @@ const getOverrideConfig = (overrides, filepath, config) => {
 
   return config
 }
+const getBareImportSpecifier = specifier => {
+  return specifier.replace(/['"`]/g, '')
+}
 const importPrefix = /^(?:(\.{1,2}\/)+)|^\/|^.+:\/\/\/?[.-\w]+\//
 const dynamicImportsWithoutComments =
   /(?<![\w.]|#!|(?:\/{2}.+\n?)+|\/\*[\s\w]*?|\*.+?|['"`][^)$,\n]*)import\s*\((?!\s*\/\*)(?<path>\s*?['"`][^)]+['"`]\s*)\)(?!\s*?\*\/)/gm
 
 export {
+  getBareImportSpecifier,
   getOverrideConfig,
   getOverrideSchema,
   pathIsMatch,
