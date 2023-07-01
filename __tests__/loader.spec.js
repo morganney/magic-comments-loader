@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 import webpack from 'webpack'
 import { createFsFromVolume, Volume } from 'memfs'
 
-const { dirname, resolve, basename } = path
+const { dirname, resolve, basename, relative } = path
 const filename = fileURLToPath(import.meta.url)
 const directory = dirname(filename)
 const loaderPath = resolve(directory, '../src/index.js')
@@ -87,7 +87,7 @@ describe('loader', () => {
       use: {
         loader: loaderPath,
         options: {
-          webpackChunkName: '__fixtures__/**/*.js'
+          webpackChunkName: '**/__fixtures__/**/*.js'
         }
       }
     })
@@ -102,7 +102,7 @@ describe('loader', () => {
       use: {
         loader: loaderPath,
         options: {
-          webpackChunkName: ['__fixtures__/**/*.js', `!${entry}`]
+          webpackChunkName: ['**/__fixtures__/**/*.js', `!**/${entry}`]
         }
       }
     })
@@ -114,7 +114,7 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           match: 'import',
-          webpackChunkName: 'folder/**/*.js'
+          webpackChunkName: '**/folder/**/*.js'
         }
       }
     })
@@ -135,7 +135,7 @@ describe('loader', () => {
             },
             overrides: [
               {
-                files: '__no-match__/**/*.js',
+                files: '**/__no-match__/**/*.js',
                 config: {
                   active: false
                 }
@@ -185,7 +185,7 @@ describe('loader', () => {
           webpackChunkName: {
             config: {
               active: (modulePath, importPath) => {
-                if (modulePath === entry && importPath.includes('.js')) {
+                if (importPath.includes('.js')) {
                   return true
                 }
               }
@@ -241,7 +241,7 @@ describe('loader', () => {
             },
             overrides: [
               {
-                files: ['__fixtures__/**/*.js'],
+                files: ['**/__fixtures__/**/*.js'],
                 config: {
                   active: true,
                   basename: true
@@ -353,7 +353,7 @@ describe('loader', () => {
             },
             overrides: [
               {
-                files: '__fixtures__/**/*.js',
+                files: '**/__fixtures__/**/*.js',
                 config: {
                   fetchPriority: () => 'invalid priority'
                 }
@@ -541,7 +541,7 @@ describe('loader', () => {
             },
             overrides: [
               {
-                files: '__fixtures__/**/*.js',
+                files: '**/__fixtures__/**/*.js',
                 config: {
                   mode: 'eager'
                 }
@@ -678,7 +678,7 @@ describe('loader', () => {
             },
             overrides: [
               {
-                files: '__fixtures__/**/*.js',
+                files: '**/__fixtures__/**/*.js',
                 config: {
                   /**
                    * `webpackExclude` and `webpackInclude` need to explicitly
@@ -785,7 +785,9 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackExports: (modulePath, importPath) => {
-            return [modulePath.split('/')[0], importPath.split('/')[1]]
+            const modPath = relative(process.cwd(), modulePath)
+
+            return [modPath.split('/')[0], importPath.split('/')[1]]
           }
         }
       }
@@ -794,7 +796,7 @@ describe('loader', () => {
 
     expect(output).toEqual(
       expect.stringContaining(
-        `import(/* webpackExports: ["__fixtures__", "folder"] */ './folder/module.js')`
+        `import(/* webpackExports: ["__tests__", "folder"] */ './folder/module.js')`
       )
     )
 
@@ -827,7 +829,7 @@ describe('loader', () => {
             },
             overrides: [
               {
-                files: '__fixtures__/**/*.js',
+                files: '**/__fixtures__/**/*.js',
                 config: {
                   exports: () => ['baz', 'qux']
                 }
@@ -854,7 +856,7 @@ describe('loader', () => {
             },
             overrides: [
               {
-                files: '__no-match__/**/*.js',
+                files: '**/__no-match__/**/*.js',
                 config: {
                   exports: () => ['baz', 'qux']
                 }
@@ -923,6 +925,11 @@ describe('loader', () => {
     let stats = await build('__fixtures__/complex.js')
     let output = stats.toJson({ source: true }).modules[0].source
 
+    expect(output).toEqual(
+      expect.stringContaining(
+        `import  (  /* webpackChunkName: "folder-stuff" */ './folder/stuff.js'  )`
+      )
+    )
     expect(output).toEqual(
       expect.stringContaining(
         `import(/* webpackChunkName: "folder-module" */ './folder/module.js')`
@@ -1007,6 +1014,11 @@ describe('loader', () => {
     )
     expect(output).toEqual(
       expect.stringContaining(`import(/* webpackChunkName: "@pkg-c" */ '@pkg/c')`)
+    )
+    expect(output).toEqual(
+      expect.stringContaining(
+        `import  (/* webpackChunkName: "folder-stuff" */ './folder/stuff.js')`
+      )
     )
     expect(output).toEqual(
       expect.stringContaining(`import(/* some comment */ './folder/skip.js')`)

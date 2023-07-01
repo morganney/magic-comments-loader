@@ -10,6 +10,7 @@ import('./folder/module.js').then(() => {
 
 import(/* some comment */ './folder/skip.js')
 
+import  (  './folder/stuff.js'  )
 const foo = './module.json'
 /**
  * regex will miss this one, however webpack does not support this syntax.

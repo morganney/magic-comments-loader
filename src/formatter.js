@@ -1,7 +1,5 @@
+import { getMagicComment } from 'magic-comments'
 import MagicString from 'magic-string'
-
-import { commentFor } from './strategy.js'
-import { getBareImportSpecifier } from './util.js'
 
 const format = ({
   match,
@@ -12,7 +10,6 @@ const format = ({
   importExpressionNodes
 }) => {
   const magicImports = []
-  const step = 'import('.length
   const cmts = [...comments]
   const src = new MagicString(source)
   const hasComment = node => {
@@ -28,24 +25,22 @@ const format = ({
 
   for (const node of importExpressionNodes) {
     if (!hasComment(node)) {
-      const specifier = source.substring(node.start + step, node.end - 1)
-      const bareImportPath = getBareImportSpecifier(specifier)
-      const magic = Object.keys(magicCommentOptions)
-        .map(key =>
-          commentFor[key](filepath, bareImportPath, magicCommentOptions[key], match)
-        )
-        .filter(Boolean)
+      const specifier = source.substring(node.source.start, node.source.end)
+      const magicComment = getMagicComment({
+        match,
+        modulePath: filepath,
+        importPath: specifier,
+        options: magicCommentOptions
+      })
 
-      if (magic.length) {
-        const magicComment = `/* ${magic.join(', ')} */ `
-
+      if (magicComment) {
         magicImports.push(
           src
             .snip(node.start, node.end)
             .toString()
-            .replace(specifier, `${magicComment}${specifier}`)
+            .replace(specifier, `${magicComment} ${specifier}`)
         )
-        src.appendRight(node.start + step, `${magicComment}`)
+        src.appendLeft(node.source.start, `${magicComment} `)
       }
     }
   }

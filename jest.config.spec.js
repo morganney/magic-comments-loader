@@ -1,8 +1,8 @@
 export default {
   collectCoverage: true,
-  collectCoverageFrom: ['**/src/**/*.js'],
+  collectCoverageFrom: ['**/src/**/*.js', '!**/node_modules/**'],
   coverageProvider: 'babel',
-  coverageReporters: ['text', 'text-summary'],
+  coverageReporters: ['json', 'lcov', 'clover', 'text', 'text-summary'],
   modulePathIgnorePatterns: ['dist'],
   /**
    * Use alternative runner to circumvent segmentation fault when

@@ -1,7 +1,7 @@
 # [`magic-comments-loader`](https://www.npmjs.com/package/magic-comments-loader) 🪄
 
 ![CI](https://github.com/morganney/magic-comments-loader/actions/workflows/ci.yml/badge.svg)
-[![codecov](https://codecov.io/gh/morganney/magic-comments-loader/branch/master/graph/badge.svg?token=1DWQL43B8V)](https://codecov.io/gh/morganney/magic-comments-loader)
+[![codecov](https://codecov.io/gh/morganney/magic-comments-loader/branch/main/graph/badge.svg?token=1DWQL43B8V)](https://codecov.io/gh/morganney/magic-comments-loader)
 
 Keep your source code clean, add [magic comments](https://webpack.js.org/api/module-methods/#magic-comments) to your dynamic `import()` expressions at build time.
 
