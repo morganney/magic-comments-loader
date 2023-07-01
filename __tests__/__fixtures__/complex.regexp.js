@@ -9,6 +9,8 @@ import('./folder/module.js').then(() => {
 
 import(/* some comment */ './folder/skip.js')
 
+import  (  './folder/stuff.js'  ) // comment above will cause this to be skipped
+
 const foo = './module.json'
 const bar = import(foo) // regex will miss this one
 const reg = () => {}

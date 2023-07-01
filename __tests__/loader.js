@@ -22,7 +22,6 @@ describe('loader', () => {
     const stub = getStub()
     const src = 'import("src/to/file")'
     const stubInvalid = getStub({
-      verbose: true,
       webpackChunkName: true,
       webpackMode: 'invalid'
     })

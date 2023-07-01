@@ -1,10 +1,13 @@
+import { relative } from 'node:path'
+
 import { validate } from 'schema-utils'
 
 import { schema } from './schema.js'
 import { parse } from './parser.js'
 import { format } from './formatter.js'
+import { dynamicImportsWithoutComments } from 'magic-comments'
+
 import { getCommenter } from './comment.js'
-import { dynamicImportsWithoutComments } from './util.js'
 
 const loader = function (source) {
   const options = this.getOptions()
@@ -16,9 +19,7 @@ const loader = function (source) {
 
   const { mode = 'parser', match = 'module', verbose = false, ...rest } = options
   const magicCommentOptions = Object.keys(rest).length ? rest : { webpackChunkName: true }
-  const filepath = this.utils
-    .contextify(this.rootContext, this.resourcePath)
-    .replace(/^\.\/?/, '')
+  const filepath = this.resourcePath
 
   if (mode === 'parser') {
     const [magicSource, magicImports] = format({
@@ -29,8 +30,10 @@ const loader = function (source) {
     })
 
     if (verbose) {
+      const relativePath = relative(this.rootContext, filepath)
+
       magicImports.forEach(magicImport => {
-        logger.info(`${filepath} : ${magicImport}`)
+        logger.info(`${relativePath} : ${magicImport}`)
       })
     }
 
