@@ -69,7 +69,7 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackChunkName: {
-            config: {
+            options: {
               basename: true
             }
           }
@@ -130,13 +130,13 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackChunkName: {
-            config: {
+            options: {
               active: true
             },
             overrides: [
               {
                 files: '**/__no-match__/**/*.js',
-                config: {
+                options: {
                   active: false
                 }
               }
@@ -157,7 +157,7 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackChunkName: {
-            config: {
+            options: {
               active: false
             }
           }
@@ -183,7 +183,7 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackChunkName: {
-            config: {
+            options: {
               active: (modulePath, importPath) => {
                 if (importPath.includes('.js')) {
                   return true
@@ -236,13 +236,13 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackChunkName: {
-            config: {
+            options: {
               active: false
             },
             overrides: [
               {
                 files: ['**/__fixtures__/**/*.js'],
-                config: {
+                options: {
                   active: true,
                   basename: true
                 }
@@ -329,7 +329,7 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackFetchPriority: {
-            config: {
+            options: {
               fetchPriority: 'low'
             }
           }
@@ -348,13 +348,13 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackFetchPriority: {
-            config: {
+            options: {
               fetchPriority: 'low'
             },
             overrides: [
               {
                 files: '**/__fixtures__/**/*.js',
-                config: {
+                options: {
                   fetchPriority: () => 'invalid priority'
                 }
               }
@@ -371,7 +371,7 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackFetchPriority: {
-            config: {
+            options: {
               active: (modulePath, importPath) => {
                 if (importPath.endsWith('.js')) {
                   return false
@@ -408,7 +408,7 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackIgnore: {
-            config: {
+            options: {
               active: false
             }
           }
@@ -423,7 +423,7 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackIgnore: {
-            config: {
+            options: {
               active: () => false
             }
           }
@@ -502,7 +502,7 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackMode: {
-            config: {
+            options: {
               active: false
             }
           }
@@ -517,7 +517,7 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackMode: {
-            config: {
+            options: {
               active: (modulePath, importPath) => {
                 if (modulePath.startsWith('__fixtures__') && importPath.endsWith('.js')) {
                   return false
@@ -536,13 +536,13 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackMode: {
-            config: {
+            options: {
               mode: 'lazy'
             },
             overrides: [
               {
                 files: '**/__fixtures__/**/*.js',
-                config: {
+                options: {
                   mode: 'eager'
                 }
               }
@@ -592,7 +592,7 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackPrefetch: {
-            config: {
+            options: {
               active: () => false
             }
           }
@@ -638,7 +638,7 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackPreload: {
-            config: {
+            options: {
               active: () => false
             }
           }
@@ -673,13 +673,13 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackExclude: {
-            config: {
+            options: {
               active: false
             },
             overrides: [
               {
                 files: '**/__fixtures__/**/*.js',
-                config: {
+                options: {
                   /**
                    * `webpackExclude` and `webpackInclude` need to explicitly
                    * turn activation back on, rather than the loader infer
@@ -726,8 +726,23 @@ describe('loader', () => {
       use: {
         loader: loaderPath,
         options: {
+          webpackInclude: /es\.json$/
+        }
+      }
+    })
+    output = stats.toJson({ source: true }).modules[0].source
+    expect(output).toEqual(
+      expect.stringContaining(
+        `import(/* webpackInclude: /es\\.json$/ */ './folder/module.js')`
+      )
+    )
+
+    stats = await build(entry, {
+      use: {
+        loader: loaderPath,
+        options: {
           webpackInclude: {
-            config: {
+            options: {
               active: false
             }
           }
@@ -768,7 +783,7 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackInclude: {
-            config: {
+            options: {
               active: () => false
             }
           }
@@ -805,7 +820,7 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackExports: {
-            config: {
+            options: {
               exports: () => ['foo', 'bar']
             }
           }
@@ -824,13 +839,13 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackExports: {
-            config: {
+            options: {
               exports: () => ['foo', 'bar']
             },
             overrides: [
               {
                 files: '**/__fixtures__/**/*.js',
-                config: {
+                options: {
                   exports: () => ['baz', 'qux']
                 }
               }
@@ -851,13 +866,13 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackExports: {
-            config: {
+            options: {
               exports: () => ['foo', 'bar']
             },
             overrides: [
               {
                 files: '**/__no-match__/**/*.js',
-                config: {
+                options: {
                   exports: () => ['baz', 'qux']
                 }
               }
@@ -878,7 +893,7 @@ describe('loader', () => {
         loader: loaderPath,
         options: {
           webpackExports: {
-            config: {
+            options: {
               active: () => false
             }
           }
