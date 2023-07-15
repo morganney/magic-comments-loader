@@ -1,6 +1,6 @@
 {
   "name": "magic-comments-loader",
-  "version": "2.0.0-rc.0",
+  "version": "2.0.0",
   "description": "Add webpack magic comments to your dynamic imports at build time.",
   "main": "dist",
   "type": "module",
@@ -68,7 +68,7 @@
     "acorn-jsx": "^5.3.2",
     "acorn-jsx-walk": "^2.0.0",
     "acorn-walk": "^8.2.0",
-    "magic-comments": "^1.0.0-rc.0",
+    "magic-comments": "^2.1.0",
     "magic-string": "^0.30.0",
     "micromatch": "^4.0.4",
     "schema-utils": "^4.1.0"

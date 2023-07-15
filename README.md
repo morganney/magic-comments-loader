@@ -2,6 +2,7 @@
 
 ![CI](https://github.com/morganney/magic-comments-loader/actions/workflows/ci.yml/badge.svg)
 [![codecov](https://codecov.io/gh/morganney/magic-comments-loader/branch/main/graph/badge.svg?token=1DWQL43B8V)](https://codecov.io/gh/morganney/magic-comments-loader)
+[![NPM version](https://img.shields.io/npm/v/magic-comments-loader.svg)](https://www.npmjs.com/package/magic-comments-loader)
 
 Keep your source code clean, add [magic comments](https://webpack.js.org/api/module-methods/#magic-comments) to your dynamic `import()` expressions at build time.
 
@@ -42,50 +43,10 @@ The `webpackChunkName` comment is added by default when registering the loader. 
 
 ## Options
 
-Most loader options can be defined with a [`CommentConfig`](#commentconfig) object to support overrides and  suboptions ([`CommentOptions`](#commentoptions)). Options that support globs use [`micromatch`](https://github.com/micromatch/micromatch) for pattern matching.
-
 * [`verbose`](#verbose)
 * [`mode`](#mode)
 * [`match`](#match)
-* [`webpackChunkName`](#webpackchunkname)
-* [`webpackFetchPriority`](#webpackfetchpriority)
-* [`webpackMode`](#webpackmode)
-* [`webpackPrefetch`](#webpackprefetch)
-* [`webpackPreload`](#webpackpreload)
-* [`webpackInclude`](#webpackinclude)
-* [`webpackExclude`](#webpackexclude)
-* [`webpackExports`](#webpackexports)
-* [`webpackIgnore`](#webpackignore)
-
-### `CommentConfig`
-To allow configuration overrides based on module or import paths, or to support comment options that extend functionality, all options except `verbose`, and `match`, can be defined with an object using the following interface:
-
-```ts
-interface CommentConfig {
-  config: CommentOptions;
-  overrides?: Array<{
-    files: string | string[];
-    config: CommentOptions;
-  }>;
-}
-```
-
-#### `CommentOptions`
-
-The exact `CommentOptions` shape defining `config` is determined by the loader option it is associated with, but the interface always extends `CommentOptionsBase`:
-```ts
-interface CommentOptions extends CommentOptionsBase {
-  // In general, a "falsy" value disables the comment.
-  [option: string]: boolean | string | Function | RegExp | undefined;
-}
-
-interface CommentOptionsBase {
-  // Can be used to turn a magic comment on or off.
-  active?: boolean | ((modulePath: string, importPath: string) => boolean)
-}
-```
-
-You can skip to the [overrides example](#overrides) to get a better sense of how this all works.
+* `[magicCommentName: string]: MagicCommentValue` see `magic-comments` [options](https://github.com/morganney/magic-comments#options) for details
 
 ### `verbose`
 **type**
@@ -113,278 +74,6 @@ Sets how the loader finds dynamic import expressions in your source code, either
 **default** `'module'`
 
 Sets how globs are matched, either the module file path, or the `import()` specifier.
-
-### `webpackChunkName`
-
-**type**
-```ts
-boolean
-| string
-| string[]
-| ((modulePath: string, importPath: string) => any)
-| CommentConfig
-```
-**default** `true`
-
-Adds `webpackChunkName` magic comments. This option is enabled by default when registering the loader in your webpack configuration.
-
-When using a [`CommentConfig`](#commentconfig) the following comment options are supported:
-```ts
-{
-  basename: boolean;
-  active: boolean | ((modulePath: string, importPath: string) => boolean);
-}
-```
-
-Possible values:
-* `true` - Adds `webpackChunkName` comments to **all** dynamic imports using the derived path from the import specifier in kebab-case as the chunk name. This is the default.
-* `false` - Disables adding the `webpackChunkName` comment globally.
-* `string | string[]` - When the glob(s) match a path from a [`match`](#match) path, a `webpackChunkName` comment is added using the derived path from the import specifier in kebab-case as the chunk name.
-* `(modulePath: string, importPath: string) => any` - Return a string to be used as the chunk name. Returning a falsy value will skip adding the comment.
-* `config.basename`:
-  * `true` - Use only the [basename](https://nodejs.org/api/path.html#pathbasenamepath-suffix) from the import specifier as the chunk name. Relative imports may result in name collisions. Use in areas where you know the basenames are unique.
-  * `false` - Use the full derived path from the import specifier in kebab-case as the chunk name, same as the default behavior.
-* `config.active`:
-  * `true` - Disable the comment.
-  * `false` - Enable the comment.
-
-### `webpackFetchPriority`
-
-**type**
-```ts
-boolean
-| 'high' | 'low' | 'auto'
-| ((modulePath: string, importPath: string) => any)
-| CommentConfig
-```
-**default** None
-
-Adds `webpackFetchPriority` magic comments.
-
-When using a [`CommentConfig`](#commentconfig) the following comment options are supported:
-```ts
-{
-  fetchPriority: 'high' | 'low' | 'auto' | ((modulePath: string, importPath: string) => any);
-  active: boolean | ((modulePath: string, importPath: string) => boolean);
-}
-```
-
-Possible values:
-* `false` - Disables the comment globally. This is the default behavior.
-* `true` - Add `webpackFetchPriority` magic comments to **all** dynamic imports with the default value of `'auto'`.
-* `string` - Add `webpackFetchPriority` magic comments to **all** dynamic imports with the provided string value as the priority. If the string is not `'high'`, `'low'`, or `'auto'` the comment will **not** be added.
-* `(modulePath: string, importPath: string) => any` - Return a string to be used as the priority. Returning a falsy value or an unsupported string will **not** add the comment.
-* `config.fetchPriority`:
-  * `'high' | 'low' | 'auto'` - Sets the fetch priority to the provided value when adding the comment.
-  * `(modulePath: string, importPath: string) => any` - Same as using a function for the loader option.
-* `config.active`:
-  * `true` - Disable the comment.
-  * `false` - Enable the comment.
-
-### `webpackMode`
-
-**type**
-```ts
-boolean
-| 'lazy' | 'lazy-once' | 'eager' | 'weak'
-| ((modulePath: string, importPath: string) => any)
-| CommentConfig
-```
-**default** None
-
-Adds `webpackMode` magic comments.
-
-When using a [`CommentConfig`](#commentconfig) the following comment options are supported:
-```ts
-{
-  mode: 'lazy' | 'lazy-once' | 'eager' | 'weak' | ((modulePath: string, importPath: string) => any);
-  active: boolean | ((modulePath: string, importPath: string) => boolean);
-}
-```
-
-Possible values:
-* `false` - Disables the comment globally. This is the default behavior.
-* `true` - Add `webpackMode` magic comments to **all** dynamic imports with the default value of `'lazy'`.
-* `string` - Add `webpackMode` magic comments to **all** dynamic imports with the provided string value as the mode. If the string is not `'lazy'`, `'lazy-once'`, `'eager'`, or `'weak'` the comment will **not** be added.
-* `(modulePath: string, importPath: string) => any` - Return a string to be used as the mode. Returning a falsy value or an unsupported string will **not** add the comment.
-* `config.mode`:
-  * `'lazy' | 'lazy-once' | 'eager' | 'weak'` - Sets the chunk loading mode to the provided value when adding the comment.
-  * `(modulePath: string, importPath: string) => any` - Same as using a function for the loader option.
-* `config.active`:
-  * `true` - Disable the comment.
-  * `false` - Enable the comment.
-
-### [`webpackPrefetch`](https://webpack.js.org/guides/code-splitting/#prefetchingpreloading-modules)
-
-**type**
-```ts
-boolean
-| string
-| string[]
-| ((modulePath: string, importPath: string) => boolean)
-| CommentConfig
-```
-**default** None
-
-Adds `webpackPrefetch` magic comments.
-
-When using a [`CommentConfig`](#commentconfig) the following comment options are supported:
-```ts
-{ active: boolean | ((modulePath: string, importPath: string) => boolean); }
-```
-
-Possible values:
-* `false` - Disables the comment globally. This is the default behavior.
-* `true` - Add `webpackPrefetch` magic comments with a value of `true` to **all** dynamic imports. 
-* `string | string[]` - Add `webpackPrefetch` comment with a value of `true` when the glob(s) match a path from a [`match`](#match) path.
-* `(modulePath: string, importPath: string) => boolean` - Returning `false` will disable adding the comment, otherwise it will be added.
-* `config.active`:
-  * `true` - Disable the comment.
-  * `false` - Enable the comment.
-
-### [`webpackPreload`](https://webpack.js.org/guides/code-splitting/#prefetchingpreloading-modules)
-
-**type**
-```ts
-boolean
-| string
-| string[]
-| ((modulePath: string, importPath: string) => boolean)
-| CommentConfig
-```
-**default** None
-
-Adds `webpackPreload` magic comments.
-
-When using a [`CommentConfig`](#commentconfig) the following comment options are supported:
-```ts
-{ active: boolean | ((modulePath: string, importPath: string) => boolean); }
-```
-
-Possible values:
-* `false` - Disables the comment globally. This is the default behavior.
-* `true` - Add `webpackPreload` magic comments with a value of `true` to **all** dynamic imports. 
-* `string | string[]` - Add `webpackPreload` comment with a value of `true` when the glob(s) match a path from a [`match`](#match) path.
-* `(modulePath: string, importPath: string) => boolean` - Returning `false` will disable adding the comment, otherwise it will be added.
-* `config.active`:
-  * `true` - Disable the comment.
-  * `false` - Enable the comment.
-
-### `webpackInclude`
-
-**type**
-```ts
-RegExp
-| ((modulePath: string, importPath: string) => RegExp)
-| CommentConfig
-```
-**default** None
-
-Adds `webpackInclude` magic comments.
-
-When using a [`CommentConfig`](#commentconfig) the following comment options are supported:
-```ts
-{
-  include: (modulePath: string, importPath: string) => RegExp;
-  active: boolean | ((modulePath: string, importPath: string) => boolean);
-}
-```
-
-Possible values:
-*  `RegExp` - Adds a `webpackInclude` comment to **all** dynamic imports using the provided regular expression.
-*  `(modulePath: string, importPath: string) => RegExp` - Adds a `webpackInclude` comment using the provided regular expression. Returning anything other than a regular expression does **not** add the comment.
-*  `config.include`:
-   * `RegExp` - Adds a `webpackInclude` comment to **all** dynamic imports, or only those matching a path from the [`match`](#match) path if using overrides.
-   * `(modulePath: string, importPath: string) => RegExp` - Same as using a function in the loader option.
-* `config.active`:
-  * `true` - Disable the comment.
-  * `false` - Enable the comment.
-
-### `webpackExclude`
-
-**type**
-```ts
-RegExp
-| ((modulePath: string, importPath: string) => RegExp)
-| CommentConfig
-```
-**default** None
-
-Adds `webpackExclude` magic comments.
-
-When using a [`CommentConfig`](#commentconfig) the following comment options are supported:
-```ts
-{
-  exclude: (modulePath: string, importPath: string) => RegExp;
-  active: boolean | ((modulePath: string, importPath: string) => boolean);
-}
-```
-
-Possible values:
-*  `RegExp` - Adds a `webpackExclude` comment to **all** dynamic imports using the provided regular expression.
-*  `(modulePath: string, importPath: string) => RegExp` - Adds a `webpackExclude` comment using the provided regular expression. Returning anything other than a regular expression does **not** add the comment.
-*  `config.exclude`:
-   * `RegExp` - Adds a `webpackExclude` comment to **all** dynamic imports, or only those matching a path from the [`match`](#match) path if using overrides.
-   * `(modulePath: string, importPath: string) => RegExp` - Same as using a function in the loader option.
-* `config.active`:
-  * `true` - Disable the comment.
-  * `false` - Enable the comment.
-
-### `webpackExports`
-
-**type**
-```ts
-((modulePath: string, importPath: string) => string[])
-| CommentConfig
-```
-**default** None
-
-Adds `webpackExports` magic comments.
-
-When using a [`CommentConfig`](#commentconfig) the following comment options are supported:
-```ts
-{
-  exports: (modulePath: string, importPath: string) => string[];
-  active: boolean | ((modulePath: string, importPath: string) => boolean);
-}
-```
-
-Possible values:
-* `(modulePath: string, importPath: string) => string[]` - Adds a `webpackExports` comment using the strings in the returned array as the export names. Returning anything other than an array will **not** add the comment.
-* `config.exports`:
-  * `(modulePath: string, importPath: string) => string[]` - Same as using a function in the loader option.
-* `config.active`:
-  * `true` - Disable the comment.
-  * `false` - Enable the comment.
-
-
-### `webpackIgnore`
-
-**type**
-```ts
-boolean
-| string
-| string[]
-| ((modulePath: string, importPath: string) => boolean)
-| CommentConfig
-```
-**default** None
-
-Adds `webpackIgnore` magic comments.
-
-When using a [`CommentConfig`](#commentconfig) the following comment options are supported:
-```ts
-{ active: boolean | ((modulePath: string, importPath: string) => boolean); }
-```
-
-Possible values:
-* `false` - Disables the comment globally. This is the default behavior.
-* `true` - Add `webpackIgnore` magic comments with a value of `true` to **all** dynamic imports. Effectively, opt-out of webpack code-splitting for dynamic imports. 
-* `string | string[]` - Add `webpackIgnore` comment with a value of `true` when the glob(s) match a path from a [`match`](#match) path.
-* `(modulePath: string, importPath: string) => boolean` - Returning `false` will **not** add the comment, otherwise it will be added.
-* `config.active`:
-  * `true` - Disable the comment.
-  * `false` - Enable the comment.
 
 ## Examples
 
@@ -452,7 +141,7 @@ import('./folder/module.js')
 import(/* webpackChunkName: "custom-chunk-name" */ './folder/module.js')
 ```
 
-Finally, using a [`CommentConfig`](#commentconfig) object you can change the chunk name to the import specifier's basename (instead of the full hyphenated path). This could potentially result in name collisions, so be mindful of import specifiers when activating. You could also achieve the same thing by using a function instead of `config.basename`.
+Finally, using a [`CommentConfig`](https://github.com/morganney/magic-comments#commentconfig) object you can change the chunk name to the import specifier's basename (instead of the full hyphenated path). This could potentially result in name collisions, so be mindful of import specifiers when activating. You could also achieve the same thing by using a function instead of `options.basename`.
 
 **config**
 ```js
@@ -464,7 +153,7 @@ module: {
         loader: 'magic-comments-loader',
         options: {
           webpackChunkName: {
-            config: {
+            options: {
               basename: true
             }
           }
@@ -485,7 +174,7 @@ import('./folder/module.js')
 import(/* webpackChunkName: "module" */ './folder/module.js')
 ```
 
-Most of the magic comments can be configured similarly, and **all** support configuration as a function with the signature `(modulePath: string, importPath: string) => any`, albeit the return type is checked at runtime for compliance with the expected values. Check out the loader [options](#options) for more details.
+Most of the magic comments can be configured similarly, and **all** support configuration as a function with the signature `(modulePath: string, importPath: string) => any`, albeit the return type is checked at runtime for compliance with the expected values. Check out the [options](https://github.com/morganney/magic-comments#options) for `magic-comments` more details.
 
 ### Multiple
 
@@ -526,16 +215,16 @@ import(/* webpackChunkName: "priority-module", webpackMode: "lazy", webpackFetch
 
 ### Overrides
 
-When using a [`CommentConfig`](#commentconfig) object, you can override the configuration passed in the `config` key by defining `overrides`. It is an array of objects that look like:
+When using a [`CommentConfig`](https://github.com/morganney/magic-comments#commentconfig) object, you can override the configuration passed in the `options` key by defining `overrides`. It is an array of objects that look like:
 
 ```ts
-{
+Array<{
   files: string | string[];
-  config: CommentOptions;
-}
+  options: CommentOptions;
+}>
 ```
 
-The `files` and `config` keys are both required, where the former is a glob string, or an array thereof, and the latter is the associated magic comment's [`CommentOptions`](#commentoptions).
+The `files` and `options` keys are both required, where the former is a glob string, or an array thereof, and the latter is the associated magic comment's [`CommentOptions`](https://github.com/morganney/magic-comments#commentoptions).
 
 Here's a more complete example of how overrides can be applied:
 
@@ -551,19 +240,19 @@ module: {
           match: 'import', // Now provided globs match against the import specifier
           webpackChunkName: '*.json',
           webpackMode: {
-            config: {
+            options: {
               mode: 'lazy'
             },
             overrides: [
               {
                 files: ['eager/**/*.js'],
-                config: {
+                options: {
                   mode: 'eager'
                 }
               },
               {
                 files: ['locales/**/*.json'],
-                config: {
+                options: {
                   mode: 'lazy-once'
                 }
               }
@@ -591,6 +280,8 @@ import(/* webpackMode: "lazy" */ './folder/module.js')
 import(/* webpackMode: "eager" */ './eager/module.js')
 import(/* webpackChunkName: "locales-[request]", webpackMode: "lazy-once" */ `./locales/${lang}.json`)
 ```
+
+You can also see the [example for overrides in `magic-comments`](https://github.com/morganney/magic-comments#overrides).
 
 ### TypeScript
 
