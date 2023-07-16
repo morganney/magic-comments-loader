@@ -92,7 +92,7 @@ module: {
       use: {
         loader: 'magic-comments-loader',
         options: {
-          webpackChunkName: ['src/**/*.js']
+          webpackChunkName: ['**/src/**/*.js']
         }
       }
     }
@@ -245,13 +245,13 @@ module: {
             },
             overrides: [
               {
-                files: ['eager/**/*.js'],
+                files: ['**/eager/**/*.js'],
                 options: {
                   mode: 'eager'
                 }
               },
               {
-                files: ['locales/**/*.json'],
+                files: ['**/locales/**/*.json'],
                 options: {
                   mode: 'lazy-once'
                 }
