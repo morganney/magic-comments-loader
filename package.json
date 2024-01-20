@@ -33,11 +33,12 @@
   },
   "keywords": [
     "webpack",
-    "magic",
-    "comments",
+    "magic comments",
     "loader",
     "dynamic",
-    "import"
+    "import",
+    "build",
+    "config"
   ],
   "author": "Morgan Ney <morganney@gmail.com>",
   "license": "MIT",
