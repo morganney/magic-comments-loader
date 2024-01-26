@@ -6,15 +6,14 @@ module.exports = {
   },
   extends: [
     'eslint:recommended',
-    'plugin:jest/recommended',
-    'plugin:prettier/recommended'
+    'plugin:jest/recommended'
   ],
   parser: '@babel/eslint-parser',
   parserOptions: {
     ecmaVersion: '2020',
     sourceType: 'module'
   },
-  plugins: ['jest', 'prettier'],
+  plugins: ['jest'],
   rules: {
     'no-console': 'error'
   }
