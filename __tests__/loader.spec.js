@@ -1080,4 +1080,124 @@ describe('loader', () => {
 
     expect(output).toEqual(expect.stringContaining("import('./folder/module.js')"))
   })
+
+  it('updates imports with comments based on configuration', async () => {
+    const entry = '__fixtures__/commented.js'
+    let stats = await build(entry, {
+      use: {
+        loader: loaderPath,
+        options: {
+          comments: 'replace',
+          webpackChunkName: true
+        }
+      }
+    })
+    let output = stats.toJson({ source: true }).modules[0].source
+
+    expect(output).toMatch(/webpackChunkName: "folder-module"/)
+    expect(output).not.toMatch(/something else/)
+
+    stats = await build(entry, {
+      use: {
+        loader: loaderPath,
+        options: {
+          comments: 'prepend',
+          webpackExports: () => ['a']
+        }
+      }
+    })
+    output = stats.toJson({ source: true }).modules[0].source
+
+    expect(output).toMatch(/webpackExports: \["a"\]/)
+    expect(output).toMatch('webpackChunkNames: "test-chunk"')
+    expect(output.indexOf('webpackExports') < output.indexOf('webpackChunkName')).toBe(
+      true
+    )
+
+    stats = await build(entry, {
+      use: {
+        loader: loaderPath,
+        options: {
+          comments: 'append',
+          webpackExports: () => ['b']
+        }
+      }
+    })
+    output = stats.toJson({ source: true }).modules[0].source
+
+    expect(output).toMatch(/webpackExports: \["b"\]/)
+    expect(output).toMatch('webpackFetchPriority: "high"')
+    expect(
+      output.indexOf('webpackExports') > output.indexOf('webpackFetchPriority')
+    ).toBe(true)
+
+    let firstCmt = ''
+    let magicCmt = ''
+
+    stats = await build(entry, {
+      use: {
+        loader: loaderPath,
+        options: {
+          comments: (cmts, magicComment) => {
+            firstCmt = cmts[0]
+            magicCmt = magicComment
+            return `${magicComment} /* ${cmts[0].text} */`
+          },
+          webpackExports: () => ['c']
+        }
+      }
+    })
+    output = stats.toJson({ source: true }).modules[0].source
+
+    expect(output).toMatch(/webpackExports: \["c"\]/)
+    expect(output).toMatch(firstCmt.text)
+    expect(output.indexOf(firstCmt.text) > output.indexOf(magicCmt)).toBe(true)
+
+    stats = await build(entry, {
+      use: {
+        loader: loaderPath,
+        options: {
+          comments: () => {
+            return 123
+          },
+          webpackExports: () => ['c']
+        }
+      }
+    })
+    output = stats.toJson({ source: true }).modules[0].source
+
+    // Return values other than strings result in no changes
+    expect(output).not.toMatch(/webpackExports: \["c"\]/)
+    expect(output).toMatch(firstCmt.text)
+
+    stats = await build(entry, {
+      use: {
+        loader: loaderPath,
+        options: {
+          comments: 'prepend',
+          webpackExports: {
+            options: {
+              exports: () => ['c']
+            },
+            overrides: [
+              {
+                files: '**/*.js',
+                options: {
+                  exports: () => ['d']
+                }
+              }
+            ]
+          }
+        }
+      }
+    })
+    output = stats.toJson({ source: true }).modules[0].source
+
+    // The `comments` option Should work with overrides too.
+    expect(output).toMatch(/webpackExports: \["d"\]/)
+    expect(output).toMatch('webpackChunkNames: "test-chunk"')
+    expect(output.indexOf('webpackExports') < output.indexOf('webpackChunkName')).toBe(
+      true
+    )
+  })
 })

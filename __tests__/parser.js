@@ -23,8 +23,8 @@ describe('parse', () => {
       )
     }
     `
-    const { comments } = parse(src)
+    const { astComments } = parse(src)
 
-    expect(comments).toEqual([{ start: 175, end: 188, commentText: ' comment ' }])
+    expect(astComments).toEqual([{ start: 175, end: 188, text: ' comment ' }])
   })
 })
