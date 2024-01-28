@@ -16,7 +16,7 @@ extend(base)
 
 const jsxParser = Parser.extend(jsx())
 const parse = source => {
-  const comments = []
+  const astComments = []
   const importExpressionNodes = []
   const ast = jsxParser.parse(source, {
     locations: false,
@@ -25,9 +25,9 @@ const parse = source => {
     allowAwaitOutsideFunction: true,
     allowReturnOutsideFunction: true,
     allowImportExportEverywhere: true,
-    onComment: (isBlock, commentText, start, end) => {
+    onComment: (isBlock, text, start, end) => {
       if (isBlock) {
-        comments.push({ start, end, commentText })
+        astComments.push({ start, end, text })
       }
     }
   })
@@ -38,7 +38,7 @@ const parse = source => {
     }
   })
 
-  return { ast, comments, importExpressionNodes, source }
+  return { ast, astComments, importExpressionNodes, source }
 }
 
 export { parse }

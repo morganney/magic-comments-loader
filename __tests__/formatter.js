@@ -10,7 +10,8 @@ describe('format', () => {
       match: 'module',
       source: src,
       filepath: 'src/module.js',
-      comments: [{ start: openLen, end: openLen + commentLen, commentText: ' comment ' }],
+      comments: 'ignore',
+      astComments: [{ start: openLen, end: openLen + commentLen, text: ' comment ' }],
       magicCommentOptions: { webpackChunkName: true },
       importExpressionNodes: [
         {
@@ -38,7 +39,8 @@ describe('format', () => {
       match: 'module',
       source: src,
       filepath: 'src/module.js',
-      comments: [],
+      comments: 'ignore',
+      astComments: [],
       magicCommentOptions: { webpackMode: () => 'invalid' },
       importExpressionNodes: [
         {

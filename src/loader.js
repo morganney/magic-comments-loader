@@ -17,7 +17,13 @@ const loader = function (source) {
     name: 'magic-comments-loader'
   })
 
-  const { mode = 'parser', match = 'module', verbose = false, ...rest } = options
+  const {
+    mode = 'parser',
+    match = 'module',
+    comments = 'ignore',
+    verbose = false,
+    ...rest
+  } = options
   const magicCommentOptions = Object.keys(rest).length ? rest : { webpackChunkName: true }
   const filepath = this.resourcePath
 
@@ -26,6 +32,7 @@ const loader = function (source) {
       ...parse(source),
       match,
       filepath,
+      comments,
       magicCommentOptions
     })
 
