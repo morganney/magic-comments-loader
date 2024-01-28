@@ -84,9 +84,13 @@ Sets how globs are matched, either the module file path, or the `import()` speci
 ```
 **default** `'ignore'`
 
+_Note, this option is only applied when `mode` is `parser`._
+
 _Note, this option only considers block comments that precede the dynamic imports specifier, and any comments coming after are ignored and left intact._
 
-Sets how dynamic imports with block comments are handled. If `ignore` is used, then it will be skipped and no magic comments from your configuration will be applied. If `replace` is used, then all found comments will be replaced with the magic comments. `append` and `prepend` add the magic comments before, or after the found comments, respectively. If a function is used it will be passed the found comments, and the magic comment string that is to be applied. The return value has the same effect as `replace`.
+Sets how dynamic imports with block comments are handled. If `ignore` is used, then it will be skipped and no magic comments from your configuration will be applied. If `replace` is used, then all found comments will be replaced with the magic comments. `append` and `prepend` add the magic comments after, or before the found comments, respectively.
+
+When a function is used it will be passed the found comments, and the magic comment string that is to be applied. The return value has the same effect as `replace`. There is an [example of using a function](https://github.com/morganney/magic-comments-loader/blob/main/__tests__/loader.spec.js#L1137-L1154) in the loader specification.
 
 ## Examples
 
