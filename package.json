@@ -1,6 +1,6 @@
 {
   "name": "magic-comments-loader",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Add webpack magic comments to your dynamic imports at build time.",
   "main": "dist",
   "type": "module",
