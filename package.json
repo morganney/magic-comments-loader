@@ -1,6 +1,6 @@
 {
   "name": "magic-comments-loader",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "Add webpack magic comments to your dynamic imports at build time.",
   "main": "dist",
   "type": "module",
@@ -46,10 +46,10 @@
     "dist"
   ],
   "devDependencies": {
-    "@babel/cli": "^7.23.9",
-    "@babel/core": "^7.23.9",
-    "@babel/eslint-parser": "^7.23.9",
-    "@babel/preset-env": "^7.23.9",
+    "@babel/cli": "^7.24.7",
+    "@babel/core": "^7.24.7",
+    "@babel/eslint-parser": "^7.24.7",
+    "@babel/preset-env": "^7.24.7",
     "babel-dual-package": "^1.1.3",
     "babel-register-esm": "^1.2.4",
     "eslint": "^8.42.0",
@@ -67,7 +67,7 @@
     "acorn-walk": "^8.2.0",
     "magic-comments": "^2.1.12",
     "magic-string": "^0.30.0",
-    "micromatch": "^4.0.4",
+    "micromatch": "^4.0.7",
     "schema-utils": "^4.2.0"
   },
   "prettier": {
