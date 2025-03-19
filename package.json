@@ -1,6 +1,6 @@
 {
   "name": "magic-comments-loader",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "Add webpack magic comments to your dynamic imports at build time.",
   "main": "dist",
   "type": "module",
@@ -46,14 +46,14 @@
     "dist"
   ],
   "devDependencies": {
-    "@babel/cli": "^7.24.7",
-    "@babel/core": "^7.24.7",
-    "@babel/eslint-parser": "^7.24.7",
-    "@babel/preset-env": "^7.24.7",
-    "babel-dual-package": "^1.1.3",
+    "@babel/cli": "^7.26.4",
+    "@babel/core": "^7.26.10",
+    "@babel/eslint-parser": "^7.26.10",
+    "@babel/preset-env": "^7.26.9",
+    "babel-dual-package": "^1.1.4",
     "babel-register-esm": "^1.2.4",
     "eslint": "^8.42.0",
-    "eslint-plugin-jest": "^27.2.1",
+    "eslint-plugin-jest": "^27.9.0",
     "jest": "^29.7.0",
     "jest-light-runner": "^0.6.0",
     "memfs": "^4.6.0",
@@ -67,8 +67,16 @@
     "acorn-walk": "^8.2.0",
     "magic-comments": "^2.1.12",
     "magic-string": "^0.30.0",
-    "micromatch": "^4.0.7",
+    "micromatch": "^4.0.8",
     "schema-utils": "^4.2.0"
+  },
+  "overrides": {
+    "make-dir@2.1.0": {
+      "semver": "5.7.2"
+    },
+    "@typescript-eslint/typescript-estree@5.59.9": {
+      "semver": "7.5.2"
+    }
   },
   "prettier": {
     "printWidth": 90,
