@@ -1,12 +1,11 @@
 import { relative } from 'node:path'
 
 import { validate } from 'schema-utils'
+import { dynamicImportsWithoutComments } from 'magic-comments'
 
 import { schema } from './schema.js'
 import { parse } from './parser.js'
 import { format } from './formatter.js'
-import { dynamicImportsWithoutComments } from 'magic-comments'
-
 import { getCommenter } from './comment.js'
 
 const loader = function (source) {
