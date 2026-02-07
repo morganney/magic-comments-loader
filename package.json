@@ -15,7 +15,6 @@
   "engines": {
     "node": ">=22.21.1"
   },
-  "engineStrict": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/morganney/magic-comments-loader.git"
