@@ -4,21 +4,25 @@ on:
   release:
     types: [published]
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   publish:
     if: contains('["morganney"]', github.actor)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v6.0.1
       - name: Setup Node
-        uses: actions/setup-node@v4.1.0
+        uses: actions/setup-node@v6.2.0
         with:
-          node-version: '20.11.1'
+          node-version: '24.13.0'
       - name: Install Dependencies
         run: npm ci
       - name: Save error log
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@v6.0.0
         if: ${{ failure() }}
         with:
           name: npm-debug-log-${{ hashFiles('package-lock.json') }}
@@ -30,7 +34,6 @@ jobs:
       - name: Pack
         run: npm pack
       - name: Push to NPM registry
-        uses: JS-DevTools/npm-publish@v3.1.1
+        uses: JS-DevTools/npm-publish@v4.1.1
         with:
-          token: ${{ secrets.NPM_AUTH_TOKEN }}
           tag: ${{ contains(github.ref, '-') && 'next' || 'latest' }}
