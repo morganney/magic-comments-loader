@@ -1,6 +1,6 @@
 {
   "name": "magic-comments-loader",
-  "version": "3.0.0-rc.0",
+  "version": "3.0.0",
   "description": "Add webpack magic comments to your dynamic imports at build time.",
   "main": "dist",
   "type": "module",
@@ -25,10 +25,10 @@
   "scripts": {
     "prepack": "npm run build",
     "build": "babel-dual-package src --out-dir dist",
-    "lint": "eslint . src __tests__ --ext .js,.cjs",
+    "lint": "eslint . src __tests__ --ext .js",
     "prettier": "prettier src __tests__ -w",
     "test:unit": "node --experimental-vm-modules --no-warnings ./node_modules/.bin/jest",
-    "test:spec": "NODE_OPTIONS='--loader=babel-register-esm --no-warnings' BABEL_ENV=test jest -c jest.config.spec.js",
+    "test:spec": "NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest -c jest.config.spec.js",
     "test": "npm run test:unit && npm run test:spec"
   },
   "keywords": [
@@ -51,24 +51,20 @@
     "@babel/eslint-parser": "^7.28.6",
     "@babel/preset-env": "^7.29.0",
     "@eslint/js": "^9.39.2",
+    "@rspack/core": "^1.0.5",
     "babel-dual-package": "^1.2.3",
-    "babel-register-esm": "^1.2.5",
     "eslint": "^9.39.2",
     "eslint-plugin-jest": "^29.12.2",
     "globals": "^17.3.0",
     "jest": "^30.2.0",
-    "jest-light-runner": "^0.7.11",
     "memfs": "^4.6.0",
     "prettier": "^3.2.4",
     "webpack": "^5.105.0"
   },
   "dependencies": {
-    "acorn": "^8.15.0",
-    "acorn-jsx": "^5.3.2",
-    "acorn-jsx-walk": "^2.0.0",
-    "acorn-walk": "^8.3.4",
     "magic-comments": "^3.0.0",
     "magic-string": "^0.30.21",
+    "oxc-parser": "^0.112.0",
     "schema-utils": "^4.3.3"
   },
   "prettier": {

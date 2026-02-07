@@ -41,6 +41,8 @@ const dynamicModule = await import(/* webpackChunkName: "path-to-module" */ './p
 
 The `webpackChunkName` comment is added by default when registering the loader. See the supported [options](#options) to learn about configuring other magic comments.
 
+> **Rspack:** This loader is compatible with Rspack as well. Use the same configuration shape in your `rspack.config.js`.
+
 ## Options
 
 * [`verbose`](#verbose)
@@ -65,7 +67,7 @@ Prints console statements of the module filepath and updated `import()` during t
 ```
 **default** `'parser'`
 
-Sets how the loader finds dynamic import expressions in your source code, either using an [ECMAScript parser](https://github.com/acornjs/acorn), or a regular expression. Your mileage may vary when using `'regexp'`.
+Sets how the loader finds dynamic import expressions in your source code, either using an [ECMAScript parser](https://github.com/oxc-project/oxc/tree/main/crates/oxc_parser) (oxc-parser), or a regular expression. Your mileage may vary when using `'regexp'`.
 
 ### `match`
 **type**
