@@ -8,8 +8,10 @@ const { dirname, resolve, basename, relative } = path
 const filename = fileURLToPath(import.meta.url)
 const directory = dirname(filename)
 const loaderPath = resolve(directory, '../src/index.js')
+const bundler = globalThis.__MCL_BUNDLER__ ?? webpack
+const bundlerName = globalThis.__MCL_BUNDLER_NAME__ ?? 'webpack'
 const build = (entry, config = { loader: loaderPath }) => {
-  const compiler = webpack({
+  const compiler = bundler({
     mode: 'none',
     context: directory,
     entry: `./${entry}`,
@@ -51,7 +53,7 @@ const build = (entry, config = { loader: loaderPath }) => {
   })
 }
 
-describe('loader', () => {
+describe(`loader (${bundlerName})`, () => {
   const entry = '__fixtures__/basic.js'
 
   it('adds webpackChunkName magic comments', async () => {
